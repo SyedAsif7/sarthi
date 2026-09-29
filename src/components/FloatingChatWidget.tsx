@@ -25,7 +25,10 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
   onNavigateTab,
   onOpenTripPlanner,
 }) => {
-  const [isOpen, setIsOpen] = useState(true); // Open by default just like in screenshot!
+  // On mobile screens, default closed so it doesn't cover initial hero; on desktop open by default
+  const [isOpen, setIsOpen] = useState(() => {
+    return typeof window !== 'undefined' && window.innerWidth > 768;
+  });
   const [selectedLang, setSelectedLang] = useState<'en' | 'hi' | 'sat' | 'ho' | 'mun'>('en');
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -112,34 +115,37 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
       handleSendMessage('What are the best waterfalls and seasons to visit Jharkhand?');
     } else if (type === 'itinerary') {
       onOpenTripPlanner();
+      if (window.innerWidth < 768) setIsOpen(false);
     } else if (type === 'activity') {
       onNavigateTab('marketplace');
+      if (window.innerWidth < 768) setIsOpen(false);
     } else if (type === 'support') {
       onNavigateTab('safety');
+      if (window.innerWidth < 768) setIsOpen(false);
     }
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-20 sm:bottom-6 right-3 sm:right-6 z-40 flex flex-col items-end">
       
-      {/* FLOATING CHAT CARD (Shown when isOpen is true) */}
+      {/* FLOATING CHAT CARD (Optimized for mobile viewports) */}
       {isOpen && (
-        <div className="mb-3 w-[360px] sm:w-[420px] max-w-[95vw] h-[520px] bg-[#F5F2EB] rounded-3xl shadow-2xl border border-[#E0D9C8] flex flex-col overflow-hidden animate-fadeIn relative">
+        <div className="mb-2 sm:mb-3 w-[calc(100vw-1.5rem)] sm:w-[420px] max-w-[420px] h-[68vh] sm:h-[520px] max-h-[540px] bg-[#F5F2EB] rounded-3xl shadow-2xl border border-[#E0D9C8] flex flex-col overflow-hidden animate-fadeIn relative">
           
           {/* Top Bar: Multi-language selector matching screenshot */}
-          <div className="bg-[#EFECE3] px-3.5 py-2.5 border-b border-[#E2DBD0] flex items-center justify-between">
+          <div className="bg-[#EFECE3] px-3 sm:px-3.5 py-2.5 border-b border-[#E2DBD0] flex items-center justify-between">
             <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 scrollbar-none">
               {languages.map((l) => (
                 <button
                   key={l.id}
                   onClick={() => handleLanguageChange(l.id)}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all ${
                     selectedLang === l.id
                       ? 'bg-[#2D5A27] text-white shadow-sm'
                       : 'text-stone-700 hover:bg-[#E5E0D4]'
                   }`}
                 >
-                  <span className="text-[11px]">{l.flag}</span>
+                  <span>{l.flag}</span>
                   <span>{l.label}</span>
                 </button>
               ))}
@@ -164,11 +170,11 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
           </div>
 
           {/* Quick Action Terracotta Pills matching screenshot */}
-          <div className="p-3 bg-[#FAF8F3] border-b border-[#E8E2D5] space-y-1.5">
-            <div className="flex flex-wrap items-center gap-1.5">
+          <div className="p-2.5 sm:p-3 bg-[#FAF8F3] border-b border-[#E8E2D5] space-y-1.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
               <button
                 onClick={() => handleQuickPill('faqs')}
-                className="px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-xs font-bold flex items-center gap-1 shadow-sm transition-all hover:scale-[1.02] active:scale-95"
+                className="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow-sm whitespace-nowrap shrink-0 transition-all active:scale-95"
               >
                 <span>💡</span>
                 <span>FAQS</span>
@@ -176,7 +182,7 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
 
               <button
                 onClick={() => handleQuickPill('itinerary')}
-                className="px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-xs font-bold flex items-center gap-1 shadow-sm transition-all hover:scale-[1.02] active:scale-95"
+                className="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow-sm whitespace-nowrap shrink-0 transition-all active:scale-95"
               >
                 <span>🗺️</span>
                 <span>Suggest Itinerary</span>
@@ -184,24 +190,24 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
 
               <button
                 onClick={() => handleQuickPill('activity')}
-                className="px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-xs font-bold flex items-center gap-1 shadow-sm transition-all hover:scale-[1.02] active:scale-95"
+                className="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow-sm whitespace-nowrap shrink-0 transition-all active:scale-95"
               >
                 <span>🏕️</span>
-                <span>Book an Activity</span>
+                <span>Book Activity</span>
               </button>
 
               <button
                 onClick={() => handleQuickPill('support')}
-                className="px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-xs font-bold flex items-center gap-1 shadow-sm transition-all hover:scale-[1.02] active:scale-95"
+                className="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow-sm whitespace-nowrap shrink-0 transition-all active:scale-95"
               >
                 <span>🎧</span>
-                <span>Live Support Info</span>
+                <span>Live Support</span>
               </button>
             </div>
           </div>
 
           {/* Messages Body */}
-          <div className="flex-1 p-3.5 overflow-y-auto space-y-3 text-xs">
+          <div className="flex-1 p-3 sm:p-3.5 overflow-y-auto space-y-3 text-xs">
             {messages.map((m) => {
               const isSarthi = m.sender === 'sarthi';
               return (
@@ -216,13 +222,13 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
                   )}
 
                   <div
-                    className={`max-w-[85%] p-3 rounded-2xl leading-relaxed ${
+                    className={`max-w-[88%] p-3 rounded-2xl leading-relaxed ${
                       isSarthi
                         ? 'bg-white text-stone-800 border border-[#E5DFD3] shadow-xs'
                         : 'bg-[#2D5A27] text-white font-medium rounded-br-none shadow-sm'
                     }`}
                   >
-                    <p className="whitespace-pre-line">{m.text}</p>
+                    <p className="whitespace-pre-line text-xs">{m.text}</p>
                     <span className={`text-[9px] block text-right mt-1 ${isSarthi ? 'text-stone-400' : 'text-stone-300'}`}>
                       {m.timestamp}
                     </span>
@@ -244,7 +250,7 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
           </div>
 
           {/* Input Bar matching screenshot with Send plane icon */}
-          <div className="p-2.5 bg-white border-t border-[#E8E2D5]">
+          <div className="p-2 sm:p-2.5 bg-white border-t border-[#E8E2D5]">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -272,15 +278,15 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
         </div>
       )}
 
-      {/* CIRCULAR GREEN FLOATING TRIGGER BUTTON matching screenshot */}
+      {/* CIRCULAR GREEN FLOATING TRIGGER BUTTON */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-[#2D5A27] hover:bg-[#23471e] text-white flex items-center justify-center shadow-xl shadow-[#2D5A27]/30 transition-all hover:scale-105 active:scale-95 group relative"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#2D5A27] hover:bg-[#23471e] text-white flex items-center justify-center shadow-xl shadow-[#2D5A27]/30 transition-all hover:scale-105 active:scale-95 group relative"
         aria-label="Toggle Sarthi AI Assistant"
       >
-        <MessageCircle className="w-7 h-7 fill-white text-[#2D5A27]" />
+        <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-[#2D5A27]" />
         
-        {/* Glowing badge */}
+        {/* Unread badge */}
         {!isOpen && (
           <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#C85A32] border-2 border-white flex items-center justify-center text-[9px] font-bold text-white animate-pulse">
             1

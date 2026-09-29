@@ -136,10 +136,10 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
 
         {/* Hero Text Content matching screenshot */}
-        <div className="absolute inset-0 z-20 flex flex-col justify-center px-6 sm:px-12 md:px-16 max-w-2xl text-left space-y-6">
+        <div className="absolute inset-0 z-20 flex flex-col justify-center px-4 sm:px-12 md:px-16 max-w-2xl text-left space-y-4 sm:space-y-6">
 
           {/* Exact Heading from screenshot */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white font-serif tracking-tight leading-tight sm:leading-none">
+          <h1 className="text-2xl sm:text-4xl md:text-6xl font-extrabold text-white font-serif tracking-tight leading-tight sm:leading-none">
             Jharkhand: <br />
             <span className="text-stone-100 font-normal">The Land of Forests</span> <br />
             <span className="text-amber-400">Waterfalls and Wonders</span>
@@ -150,10 +150,10 @@ export const HomePage: React.FC<HomePageProps> = ({
           </p>
 
           {/* Exact Button from screenshot: [Start Your Journey] */}
-          <div className="pt-2 flex flex-wrap items-center gap-4">
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
             <button
               onClick={onPlanTripClick}
-              className="px-8 py-3.5 rounded-2xl bg-[#E5A93C] hover:bg-[#d89b2b] text-stone-950 font-bold text-sm sm:text-base shadow-lg shadow-amber-900/30 transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-[#E5A93C] hover:bg-[#d89b2b] text-stone-950 font-bold text-sm sm:text-base shadow-lg shadow-amber-900/30 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
               <Sparkles className="w-4 h-4 text-stone-950" />
               <span>Start Your Journey</span>
@@ -161,7 +161,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             <button
               onClick={onExploreClick}
-              className="px-6 py-3.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-sm backdrop-blur-md border border-white/30 transition-all"
+              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-sm backdrop-blur-md border border-white/30 transition-all flex items-center justify-center text-center"
             >
               <span>Explore All Destinations</span>
             </button>

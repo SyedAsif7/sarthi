@@ -507,38 +507,34 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
                 </p>
               </div>
 
-              {/* Top Budget Breakdown as specified in prompt:
-                  Total Budget: ₹10,000
-                  Estimated Spend: ₹9,200
-                  Remaining: ₹800 */}
-              <div className="grid grid-cols-3 gap-3 bg-white/10 p-4 rounded-2xl backdrop-blur-md border border-white/15 text-center shrink-0">
+              {/* Top Budget Breakdown */}
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-3 bg-white/10 p-2.5 sm:p-4 rounded-2xl backdrop-blur-md border border-white/15 text-center shrink-0 w-full md:w-auto">
                 <div>
-                  <p className="text-[11px] text-forest-300 font-medium">Total Budget</p>
-                  <p className="text-sm sm:text-base font-bold text-white">
+                  <p className="text-[10px] sm:text-[11px] text-forest-300 font-medium">Total Budget</p>
+                  <p className="text-xs sm:text-base font-bold text-white">
                     ₹{currentItinerary.totalBudget.toLocaleString('en-IN')}
                   </p>
                 </div>
-                <div className="border-x border-white/20 px-2">
-                  <p className="text-[11px] text-gold-300 font-medium">Estimated Spend</p>
-                  <p className="text-sm sm:text-base font-bold text-gold-400">
+                <div className="border-x border-white/20 px-1 sm:px-2">
+                  <p className="text-[10px] sm:text-[11px] text-gold-300 font-medium">Estimated Spend</p>
+                  <p className="text-xs sm:text-base font-bold text-gold-400">
                     ₹{currentItinerary.estimatedSpend.toLocaleString('en-IN')}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] text-emerald-300 font-medium">Remaining Cushion</p>
-                  <p className="text-sm sm:text-base font-bold text-emerald-400">
+                  <p className="text-[10px] sm:text-[11px] text-emerald-300 font-medium">Remaining Cushion</p>
+                  <p className="text-xs sm:text-base font-bold text-emerald-400">
                     ₹{currentItinerary.remainingBudget.toLocaleString('en-IN')}
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Action Buttons as specified in prompt:
-                View Route, Modify Trip, Save Trip, Download Itinerary, Ask Sarthi */}
-            <div className="mt-6 pt-6 border-t border-forest-800 flex flex-wrap items-center gap-3">
+            {/* Action Buttons: Responsive grid on mobile, flex on desktop */}
+            <div className="mt-6 pt-6 border-t border-forest-800 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3">
               <button
                 onClick={() => onViewRouteOnMap(currentItinerary)}
-                className="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-forest-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition-all hover:scale-105"
+                className="px-3.5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-forest-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95"
               >
                 <Navigation className="w-4 h-4 text-forest-950" />
                 <span>View Route</span>
@@ -548,7 +544,7 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
                 onClick={() => {
                   window.scrollTo({ top: 300, behavior: 'smooth' });
                 }}
-                className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center gap-1.5 transition-all"
+                className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-forest-300" />
                 <span>Modify Trip</span>
@@ -559,7 +555,7 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
                   onSaveTrip(currentItinerary);
                   triggerConfetti();
                 }}
-                className="px-4 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-700 text-white font-semibold text-xs flex items-center gap-1.5 transition-all"
+                className="px-3.5 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all"
               >
                 <Bookmark className="w-3.5 h-3.5 text-gold-400" />
                 <span>Save Trip</span>
@@ -567,15 +563,15 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
 
               <button
                 onClick={handleDownloadItinerary}
-                className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center gap-1.5 transition-all"
+                className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all"
               >
                 <Download className="w-3.5 h-3.5 text-turquoise-400" />
-                <span>Download Itinerary</span>
+                <span>Download</span>
               </button>
 
               <button
                 onClick={() => onAskSarthiWithContext(currentItinerary)}
-                className="px-4 py-2.5 rounded-xl bg-coral-600 hover:bg-coral-700 text-white font-bold text-xs flex items-center gap-1.5 ml-auto transition-all shadow-md"
+                className="col-span-2 sm:col-span-1 sm:ml-auto px-4 py-2.5 rounded-xl bg-coral-600 hover:bg-coral-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md"
               >
                 <MessageSquare className="w-4 h-4 text-white" />
                 <span>Ask Sarthi</span>

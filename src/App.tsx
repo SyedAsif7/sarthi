@@ -6,6 +6,7 @@ import { DestinationModal } from './components/DestinationModal';
 import { MarketplaceModal } from './components/MarketplaceModal';
 import { InteractiveMap } from './components/InteractiveMap';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
+import { MobileBottomNav } from './components/MobileBottomNav';
 
 import { HomePage } from './pages/HomePage';
 import { TripPlannerPage } from './pages/TripPlannerPage';
@@ -150,7 +151,7 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-8 pb-24 lg:pb-8">
         
         {/* HOME PAGE */}
         {activeTab === 'home' && (
@@ -297,6 +298,12 @@ export function App() {
         onClose={() => setIsDemoGuideOpen(false)}
         setActiveTab={handleTabChange}
         onRunDemoPreset={handleRunDemoPreset}
+      />
+
+      {/* Mobile Bottom Navigation Bar (App Experience) */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        setActiveTab={handleTabChange}
       />
 
       {/* Footer */}
