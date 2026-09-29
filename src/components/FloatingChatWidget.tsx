@@ -14,7 +14,11 @@ import {
   Maximize2,
   RotateCcw,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff
 } from 'lucide-react';
 import { askSarthiAI } from '../services/chatService';
 import { ChatMessage } from '../types';
@@ -34,6 +38,9 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
   const [selectedLang, setSelectedLang] = useState<'en' | 'hi' | 'sat' | 'ho' | 'mun'>('en');
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   const initialWelcomeText = `Johar! 🙏 I am **Sarthi**, your AI travel companion for Jharkhand.\n\nI can help you create budget itineraries, find secret waterfalls, or connect with verified local tribal guides. What would you like to explore today?`;
 
@@ -58,6 +65,20 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isTyping, isOpen]);
+
+  // Clean up speech recognition & text-to-speech on unmount
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+    };
+  }, []);
 
   const languages = [
     { id: 'en', label: 'English', flag: '🇬🇧' },
@@ -108,6 +129,79 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
         ]
       }
     ]);
+  };
+
+  const handleToggleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Voice input is not supported in this browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = selectedLang === 'hi' ? 'hi-IN' : 'en-IN';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => (result as any)[0].transcript)
+          .join('');
+        setInputValue(transcript);
+      };
+
+      recognition.onerror = () => {
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      console.error('Speech recognition error:', err);
+      setIsListening(false);
+    }
+  };
+
+  const handleSpeakMessage = (msgId: string, text: string) => {
+    if (!('speechSynthesis' in window)) {
+      alert('Text-to-speech audio is not supported in this browser.');
+      return;
+    }
+
+    if (speakingMessageId === msgId) {
+      window.speechSynthesis.cancel();
+      setSpeakingMessageId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*_#`~\[\]]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = selectedLang === 'hi' ? 'hi-IN' : 'en-IN';
+    utterance.rate = 0.95;
+
+    utterance.onend = () => setSpeakingMessageId(null);
+    utterance.onerror = () => setSpeakingMessageId(null);
+
+    window.speechSynthesis.speak(utterance);
+    setSpeakingMessageId(msgId);
   };
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -296,9 +390,31 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
                       </div>
                     )}
 
-                    <span className={`text-[9px] block text-right mt-1.5 ${isSarthi ? 'text-stone-400' : 'text-stone-300'}`}>
-                      {m.timestamp}
-                    </span>
+                    <div className="flex items-center justify-between mt-1.5 pt-1">
+                      {isSarthi && (
+                        <button
+                          type="button"
+                          onClick={() => handleSpeakMessage(m.id, m.text)}
+                          className="text-stone-400 hover:text-[#2D5224] p-0.5 rounded transition-colors flex items-center gap-1 text-[10px]"
+                          title="Listen to this message"
+                        >
+                          {speakingMessageId === m.id ? (
+                            <>
+                              <VolumeX className="w-3 h-3 text-rose-500 animate-pulse" />
+                              <span className="text-rose-600 font-semibold">Stop</span>
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="w-3 h-3" />
+                              <span>Listen</span>
+                            </>
+                          )}
+                        </button>
+                      )}
+                      <span className={`text-[9px] ${isSarthi ? 'text-stone-400 ml-auto' : 'text-stone-300'}`}>
+                        {m.timestamp}
+                      </span>
+                    </div>
                   </div>
 
                   {!isSarthi && (
@@ -335,9 +451,21 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask Sarthi anything about Jharkhand..."
+                placeholder={isListening ? "Listening... Speak now..." : "Ask Sarthi anything about Jharkhand..."}
                 className="flex-1 bg-transparent text-xs font-medium text-stone-800 placeholder-stone-400 focus:outline-none"
               />
+              <button
+                type="button"
+                onClick={handleToggleVoiceInput}
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition-all shrink-0 active:scale-95 ${
+                  isListening 
+                    ? 'bg-rose-500 text-white animate-pulse shadow-md' 
+                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/60'
+                }`}
+                title={isListening ? "Stop listening" : "Speak to Sarthi (Voice Input)"}
+              >
+                {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+              </button>
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isTyping}

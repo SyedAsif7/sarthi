@@ -1,0 +1,24 @@
+{
+  "name": "SARTHI — Intelligent Travel Companion for Jharkhand",
+  "short_name": "SARTHI",
+  "description": "Smart India Hackathon 2026 AI-powered smart tourism platform for Jharkhand destination discovery, itineraries, and tribal culture.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f4",
+  "theme_color": "#15803d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/sarthi-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "48x48 96x96",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

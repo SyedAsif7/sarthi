@@ -42,6 +42,11 @@ export interface Destination {
     condition: string;
     forecast: string;
   };
+  crowdStatus?: 'Low' | 'Moderate' | 'High / Peak Rush';
+  crowdAdvice?: string;
+  ecoAdvisories?: string[];
+  audioGuideText?: string;
+  audioGuideHindi?: string;
 }
 
 export interface TripPlanRequest {

@@ -56,7 +56,11 @@ export function App() {
   const [contextPromptForChat, setContextPromptForChat] = useState<string>('');
   const [exploreCategoryFilter, setExploreCategoryFilter] = useState<string>('All');
 
-  // Handle URL hash changes (e.g. /admin)
+  // Offline and PWA Install States
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
+
+  // Handle URL hash changes & Offline/Install listeners
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#/', '').replace('#', '');
@@ -66,8 +70,34 @@ export function App() {
     };
     handleHash();
     window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      setInstallPromptEvent(e);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+    };
   }, []);
+
+  const handleInstallApp = async () => {
+    if (!installPromptEvent) return;
+    installPromptEvent.prompt();
+    const choice = await installPromptEvent.userChoice;
+    if (choice && choice.outcome === 'accepted') {
+      setInstallPromptEvent(null);
+    }
+  };
 
   // Update hash when tab changes to admin or others
   const handleTabChange = (tab: string) => {
@@ -143,6 +173,38 @@ export function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#faf8f4]">
       
+      {/* Offline Alert Bar (SIH Resilience Feature for Remote Forest Areas) */}
+      {isOffline && (
+        <div className="bg-emerald-950 text-emerald-100 text-xs py-2 px-4 text-center font-medium flex items-center justify-center gap-2 border-b border-emerald-800 shadow-inner z-50 sticky top-0 animate-fadeIn">
+          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+          <span>🌲 <strong>Offline Forest Mode:</strong> Cellular network is unreachable. Cached itineraries, destinations, and emergency numbers (112, 108, 1363) are active!</span>
+        </div>
+      )}
+
+      {/* PWA Install Notification (when installable) */}
+      {installPromptEvent && (
+        <div className="bg-gold-500 text-forest-950 text-xs py-1.5 px-4 font-bold flex items-center justify-between gap-2 shadow-sm z-40 sticky top-0">
+          <div className="flex items-center gap-2 truncate">
+            <span>📲</span>
+            <span className="truncate">Install SARTHI on your phone for full offline access in forest areas</span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleInstallApp}
+              className="px-3 py-1 rounded-lg bg-forest-950 text-gold-300 hover:bg-forest-900 text-xs font-extrabold shadow-sm active:scale-95 transition-transform"
+            >
+              Install App
+            </button>
+            <button
+              onClick={() => setInstallPromptEvent(null)}
+              className="text-forest-950/70 hover:text-forest-950 text-xs p-1"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}

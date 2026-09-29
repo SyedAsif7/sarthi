@@ -9,10 +9,13 @@ import {
   User, 
   ArrowRight,
   ShieldCheck,
-  Zap,
   RotateCcw,
   CheckCircle2,
-  HelpCircle
+  HelpCircle,
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff
 } from 'lucide-react';
 import { ChatMessage } from '../types';
 import { INITIAL_CHAT_MESSAGES, askSarthiAI } from '../services/chatService';
@@ -31,6 +34,9 @@ export const ChatAssistantPage: React.FC<ChatAssistantPageProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+  const recognitionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const suggestedQuestions = [
@@ -56,8 +62,86 @@ export const ChatAssistantPage: React.FC<ChatAssistantPageProps> = ({
     }
   }, [contextItineraryPrompt]);
 
+  // Clean up speech recognition & text-to-speech on unmount
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+    };
+  }, []);
+
   const handleResetChat = () => {
     setMessages(INITIAL_CHAT_MESSAGES);
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setSpeakingMessageId(null);
+  };
+
+  const handleToggleVoiceInput = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Voice input is not supported in this browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) recognitionRef.current.stop();
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      recognition.onstart = () => setIsListening(true);
+      recognition.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => (result as any)[0].transcript)
+          .join('');
+        setInputValue(transcript);
+      };
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      console.error('Speech recognition error:', err);
+      setIsListening(false);
+    }
+  };
+
+  const handleSpeakMessage = (msgId: string, text: string) => {
+    if (!('speechSynthesis' in window)) {
+      alert('Text-to-speech audio is not supported in this browser.');
+      return;
+    }
+
+    if (speakingMessageId === msgId) {
+      window.speechSynthesis.cancel();
+      setSpeakingMessageId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*_#`~\[\]]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'en-IN';
+    utterance.rate = 0.95;
+
+    utterance.onend = () => setSpeakingMessageId(null);
+    utterance.onerror = () => setSpeakingMessageId(null);
+
+    window.speechSynthesis.speak(utterance);
+    setSpeakingMessageId(msgId);
   };
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -272,8 +356,30 @@ export const ChatAssistantPage: React.FC<ChatAssistantPageProps> = ({
                     </div>
                   )}
 
-                  <div className={`text-[10px] ${isSarthi ? 'text-stone-400' : 'text-stone-300'} text-right`}>
-                    {msg.timestamp}
+                  <div className="flex items-center justify-between pt-1 border-t border-stone-100/50 mt-1">
+                    {isSarthi && (
+                      <button
+                        type="button"
+                        onClick={() => handleSpeakMessage(msg.id, msg.text)}
+                        className="text-stone-400 hover:text-[#2D5224] flex items-center gap-1 text-[11px] font-medium transition-colors"
+                        title="Listen to response"
+                      >
+                        {speakingMessageId === msg.id ? (
+                          <>
+                            <VolumeX className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
+                            <span className="text-rose-600 font-semibold">Stop Audio</span>
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 className="w-3.5 h-3.5" />
+                            <span>Listen to Sarthi</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                    <span className={`text-[10px] ${isSarthi ? 'text-stone-400 ml-auto' : 'text-stone-300'}`}>
+                      {msg.timestamp}
+                    </span>
                   </div>
                 </div>
 
@@ -317,9 +423,21 @@ export const ChatAssistantPage: React.FC<ChatAssistantPageProps> = ({
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Ask anything about Jharkhand destinations, budgets, homestays..."
+              placeholder={isListening ? "Listening... Speak your question now..." : "Ask anything about Jharkhand destinations, budgets, homestays..."}
               className="flex-1 px-4 py-3 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#2D5224] text-xs sm:text-sm bg-stone-50/60"
             />
+            <button
+              type="button"
+              onClick={handleToggleVoiceInput}
+              className={`p-3 rounded-2xl flex items-center justify-center font-bold transition-all active:scale-95 shadow-md shrink-0 ${
+                isListening
+                  ? 'bg-rose-500 text-white animate-pulse'
+                  : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+              }`}
+              title={isListening ? "Stop listening" : "Speak to Sarthi (Voice Input)"}
+            >
+              {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5 text-[#2D5224]" />}
+            </button>
             <button
               type="submit"
               disabled={!inputValue.trim() || isTyping}

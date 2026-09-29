@@ -18,10 +18,11 @@ import {
   RefreshCw, 
   Star,
   Hotel,
-  Coffee,
   CheckCircle2,
   ChevronDown,
-  Info
+  Info,
+  Printer,
+  Share2
 } from 'lucide-react';
 import { TripPlanRequest, GeneratedItinerary, Destination } from '../types';
 import { generateItinerary } from '../services/itineraryEngine';
@@ -177,6 +178,33 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
     link.download = `Sarthi-Jharkhand-Itinerary-${currentItinerary.numberOfDays}Days.txt`;
     link.click();
     URL.revokeObjectURL(url);
+  };
+
+  // 1-Click WhatsApp Share with styled formatting
+  const handleShareWhatsApp = () => {
+    if (!currentItinerary) return;
+    const lines = [
+      `🌲 *SARTHI: Jharkhand AI Travel Itinerary*`,
+      `📍 *${currentItinerary.title}*`,
+      `⏱️ *Duration:* ${currentItinerary.numberOfDays} Days | 👥 *Travellers:* ${currentItinerary.numberOfTravellers} (${currentItinerary.travelStyle})`,
+      `💰 *Total Budget:* ₹${currentItinerary.totalBudget.toLocaleString('en-IN')}`,
+      `   • Estimated Expenses: ₹${currentItinerary.estimatedSpend.toLocaleString('en-IN')}`,
+      `   • Emergency Cushion: ₹${currentItinerary.remainingBudget.toLocaleString('en-IN')}`,
+      `🚗 *Transport:* ${currentItinerary.transportation}`,
+      ``,
+      `📋 *Day-by-Day Schedule:*`,
+      ...currentItinerary.days.map((d) => `• *Day ${d.dayNumber}*: ${d.title} (Stay: ${d.stay.name})`),
+      ``,
+      `🛡️ *Helpline:* 112 | *Tourist Police:* 1363`,
+      `✨ Created with SARTHI — Intelligent Travel Companion for Jharkhand (SIH 2026)`
+    ];
+    const text = encodeURIComponent(lines.join('\n'));
+    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+  };
+
+  // Browser Print / Save PDF Handler
+  const handlePrintPDF = () => {
+    window.print();
   };
 
   return (
@@ -562,11 +590,30 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
               </button>
 
               <button
+                onClick={handleShareWhatsApp}
+                className="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95"
+                title="Share Itinerary via WhatsApp"
+              >
+                <Share2 className="w-3.5 h-3.5 text-white" />
+                <span>WhatsApp</span>
+              </button>
+
+              <button
+                onClick={handlePrintPDF}
+                className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all"
+                title="Print or Save as PDF"
+              >
+                <Printer className="w-3.5 h-3.5 text-gold-300" />
+                <span>Print / PDF</span>
+              </button>
+
+              <button
                 onClick={handleDownloadItinerary}
                 className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-all"
+                title="Download text file"
               >
                 <Download className="w-3.5 h-3.5 text-turquoise-400" />
-                <span>Download</span>
+                <span>Export TXT</span>
               </button>
 
               <button

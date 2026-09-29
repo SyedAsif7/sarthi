@@ -40,7 +40,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '24°C',
       condition: 'Pleasant & Breezy',
       forecast: 'Clear skies, ideal for photography'
-    }
+    },
+    crowdStatus: 'Moderate',
+    crowdAdvice: 'Best visited between 8:30 AM to 11:00 AM before weekend picnic crowds arrive.',
+    ecoAdvisories: [
+      'Plastic-free eco-zone — avoid single-use bottles',
+      'Stay on designated paved stairways; do not venture onto wet metamorphic boulders'
+    ],
+    audioGuideText: 'Welcome to Dassam Falls, one of Jharkhand\'s most awe-inspiring natural spectacles. Known in the indigenous Mundari language as Da-song, meaning water pouring from a pitcher, the Kanchi River cascades here from 144 feet across ten crystalline streams. As you stand by the misty viewpoint, breathe in the crisp sal forest air and observe the ancient rock terraces carved over millions of years.',
+    audioGuideHindi: 'दशम जलप्रपात में आपका स्वागत है। मुंडारी भाषा में इसे दा-सोंग कहा जाता है, जिसका अर्थ है घड़े से गिरता पानी। कांची नदी 144 फीट की ऊंचाई से 10 धाराओं में गिरती हुई एक विहंगम दृश्य प्रस्तुत करती है। स्थानीय जनजातीय संस्कृति और साल के वनों से घिरा यह स्थल मन को शांति प्रदान करता है।'
   },
   {
     id: 'hundru-falls',
@@ -80,7 +88,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '23°C',
       condition: 'Misty & Sunny',
       forecast: 'Refreshing afternoon breeze'
-    }
+    },
+    crowdStatus: 'Moderate',
+    crowdAdvice: 'Arrive early morning around 8:00 AM for quiet sunrise views and misty rainbows over the 98-meter gorge.',
+    ecoAdvisories: [
+      'Sal forest conservation zone',
+      'Keep stairs clean and dispose trash at designated bins at the top gate'
+    ],
+    audioGuideText: 'Welcome to Hundru Falls, among the tallest waterfalls in Jharkhand. Here, the holy Subarnarekha River plunges 98 meters straight down a rugged granite gorge. The churning pool at the base creates fine rainbows in the early morning sunlight. Local tribal communities hold deep reverence for this river that sustains life across Chotanagpur.',
+    audioGuideHindi: 'हुंडरू जलप्रपात में आपका स्वागत है। सुवर्णरेखा नदी 98 मीटर की ऊंचाई से चट्टानों पर गिरती है। सुबह की सुनहरी धूप में यहां मनमोहक इंद्रधनुष बनते हैं और आसपास के प्राकृतिक पूल पर्यटकों को आकर्षित करते हैं।'
   },
   {
     id: 'jonha-falls',
@@ -120,7 +136,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '22°C',
       condition: 'Partly Sunny',
       forecast: 'Clean mountain air, zero humidity'
-    }
+    },
+    crowdStatus: 'Low',
+    crowdAdvice: 'Serene all day; 722 steps to descend and climb, great exercise and tranquil picnic spot.',
+    ecoAdvisories: [
+      'Temple sanctuary zone',
+      'Modest attire recommended around Gautam Buddha ashram'
+    ],
+    audioGuideText: 'Welcome to Jonha Falls, also revered as Gautamdhara. Legend tells that Lord Buddha bathed in these serene waters of the Raru River during his wanderings. Descending the 722 stone steps, you are enveloped by quiet forests of sal and mahua trees.',
+    audioGuideHindi: 'जोन्हा जलप्रपात, जिसे गौतमधारा भी कहा जाता है, में आपका स्वागत है। मान्यता है कि भगवान बुद्ध ने रारू नदी के इस पवित्र जल में स्नान किया था। 722 सीढ़ियों से नीचे उतरते हुए आपको असीम शांति और प्राकृतिक सुंदरता का अनुभव होता है।'
   },
   {
     id: 'netarhat',
@@ -161,7 +185,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '17°C',
       condition: 'Crisp & Breezy',
       forecast: 'Cool mountain evening, mist expected'
-    }
+    },
+    crowdStatus: 'High / Peak Rush',
+    crowdAdvice: 'Magnolia Sunset Point gets crowded between 5:00 PM and 6:00 PM. Arrive 30 minutes early to secure the best view.',
+    ecoAdvisories: [
+      'Hill station eco-zone',
+      'Zero littering policy along pine forests and Koel view point'
+    ],
+    audioGuideText: 'Welcome to Netarhat, celebrated as the Queen of Chotanagpur. Perched at 3,600 feet amidst rolling pine forests, this hill haven is famous for the legendary Magnolia Point sunset, sunrise over Koel View, and crisp mountain breezes.',
+    audioGuideHindi: 'छोटानागपुर की रानी नेतरहाट में आपका स्वागत है। 3,600 फीट की ऊंचाई पर स्थित यह खूबसूरत हिल स्टेशन अपने मैग्नोलिया सूर्यास्त, कोयल व्यू पॉइंट और चीड़ के सुगंधित वनों के लिए प्रसिद्ध है।'
   },
   {
     id: 'betla-national-park',
@@ -201,7 +233,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '26°C',
       condition: 'Sunny Forest Canopy',
       forecast: 'High animal activity near water holes'
-    }
+    },
+    crowdStatus: 'Moderate',
+    crowdAdvice: 'Safari timings: 6:00 AM to 10:00 AM and 2:00 PM to 5:00 PM. Book gypsy safari at the forest gate 1 hour in advance.',
+    ecoAdvisories: [
+      'Tiger Reserve Buffer Area — strictly maintain silence inside the forest',
+      'No plastic or horn honking permitted'
+    ],
+    audioGuideText: 'Welcome to Betla National Park in the Palamau Tiger Reserve. Among the earliest national parks in India, Betla is home to Asiatic wild elephants, leopards, sloth bears, and the historic 16th-century Chero dynasty Fort ruins hidden deep within sal woodlands.',
+    audioGuideHindi: 'बेतला राष्ट्रीय उद्यान में आपका स्वागत है। यह भारत के सबसे पुराने संरक्षित वनों में से एक है जहां हाथी, गौर, हिरण और ऐतिहासिक चेरो राजाओं का किला वनों के बीच बसा है।'
   },
   {
     id: 'deoghar',
@@ -242,7 +282,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '25°C',
       condition: 'Warm & Festive',
       forecast: 'Bustling spiritual atmosphere'
-    }
+    },
+    crowdStatus: 'High / Peak Rush',
+    crowdAdvice: 'High footfall during Shravan and Mondays. Early morning VIP/Sugam Darshan entry between 5:00 AM and 7:00 AM is recommended.',
+    ecoAdvisories: [
+      'Temple sanctum sacred zone',
+      'Electronic devices and leather items restricted inside sanctum'
+    ],
+    audioGuideText: 'Welcome to Baba Baidyanath Dham in Deoghar, one of the 12 sacred Jyotirlingas of Lord Shiva. According to Hindu epic Ramayana, Ravana worshipped Lord Shiva here to obtain immense power. Millions of pilgrims undertake the 105 km Kanwar Yatra on foot to offer holy Ganga water from Sultanganj.',
+    audioGuideHindi: 'द्वादश ज्योतिर्लिंगों में से एक बाबा बैद्यनाथ धाम देवघर में आपका स्वागत है। हर वर्ष लाखों श्रद्धालु 105 किलोमीटर की पैदल कांवड़ यात्रा कर सुल्तानगंज से गंगाजल लाकर बाबा को अर्पित करते हैं।'
   },
   {
     id: 'patratu-valley',
@@ -283,7 +331,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '22°C',
       condition: 'Clear & Windy',
       forecast: 'Breezy winds across the valley'
-    }
+    },
+    crowdStatus: 'Low',
+    crowdAdvice: 'Spectacular winding ghat road; peaceful on weekdays, lively evening street food & boating by Patratu Dam.',
+    ecoAdvisories: [
+      'Drive safely along sharp hair-pin bends',
+      'Boating life jackets mandatory at Patratu Lake Resort'
+    ],
+    audioGuideText: 'Welcome to Patratu Valley, Jharkhand\'s scenic wonderland of twisting hairpin turns and lush emerald hills. Often called the Swiss Alps of Jharkhand, the panoramic view from the summit overlooks the sparkling waters of Patratu Dam reservoir.',
+    audioGuideHindi: 'पतरातु घाटी में आपका स्वागत है। सर्पीली घुमावदार सड़कें और हरे-भरे पहाड़ इसे झारखंड का सबसे सुंदर ड्राइव मार्ग बनाते हैं। पतरातु डैम के शांत जलाशय पर बोटिंग और फ्लोटिंग रेस्तरां का आनंद लें।'
   },
   {
     id: 'ranchi',
@@ -324,7 +380,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '24°C',
       condition: 'Pleasant & Mild',
       forecast: 'Optimal urban exploration climate'
-    }
+    },
+    crowdStatus: 'Moderate',
+    crowdAdvice: 'Tagore Hill is serene during early mornings; Rock Garden is popular with families in the late afternoon.',
+    ecoAdvisories: [
+      'Heritage protection area',
+      'Respect historical memory of Jyotirindranath Tagore'
+    ],
+    audioGuideText: 'Welcome to Ranchi, capital of Jharkhand. Explore Tagore Hill, where Nobel laureate Rabindranath Tagore\'s elder brother Jyotirindranath Tagore found poetic inspiration, and the artistic Rock Garden sculpted around Kanke Dam rocks.',
+    audioGuideHindi: 'झारखंड की राजधानी रांची में आपका स्वागत है। टैगोर हिल साहित्य और कला की ऐतिहासिक धरोहर है जहां ज्योतिरिंद्रनाथ टैगोर ने कई महान रचनाएं लिखी थीं।'
   },
   {
     id: 'parasnath',
@@ -365,7 +429,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '18°C',
       condition: 'Crisp Mountain Breeze',
       forecast: 'Cool summit temperature, light wind'
-    }
+    },
+    crowdStatus: 'Moderate',
+    crowdAdvice: 'Pilgrims start the 9 km uphill trek at 3:00 AM to reach the summit shrines before midday sun.',
+    ecoAdvisories: [
+      'Sacred Tirtha — strictly vegetarian and alcohol-free zone',
+      'Respect Jain pilgrims and mountain sanctity'
+    ],
+    audioGuideText: 'Welcome to Shikharji on Parasnath Hill, the highest peak in Jharkhand at 1,365 meters and the most sacred pilgrimage site in Jainism, where 20 of the 24 Tirthankaras attained Moksha.',
+    audioGuideHindi: 'पारसनाथ की पवित्र शिखरजी भूमि में आपका स्वागत है। 1365 मीटर की ऊंचाई पर स्थित यह पर्वत जैन धर्म का सर्वोच्च तीर्थ है, जहां 20 तीर्थंकरों ने मोक्ष प्राप्त किया।'
   },
   {
     id: 'hirni-falls',
@@ -405,7 +477,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '23°C',
       condition: 'Shaded & Cool',
       forecast: 'Pristine rainforest microclimate'
-    }
+    },
+    crowdStatus: 'Low',
+    crowdAdvice: 'Quiet and pristine waterfall in West Singhbhum dense sal forest; great for peaceful nature retreat.',
+    ecoAdvisories: [
+      'Forest fringe eco-zone',
+      'Do not enter dense forest without registered local forest guides'
+    ],
+    audioGuideText: 'Welcome to Hirni Falls, tucked away in the deep Sal forests of West Singhbhum. Fed by the Ramgarha river, the water drops 37 meters in a tranquil, untouched forested gorge.',
+    audioGuideHindi: 'हिरणी जलप्रपात में आपका स्वागत है। पश्चिमी सिंहभूम के घने साल के जंगलों के बीच रामगढ़ा नदी का यह शांत झरना प्रकृति प्रेमियों के लिए एक छिपा हुआ स्वर्ग है।'
   },
   {
     id: 'lodh-falls',
@@ -445,7 +525,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '20°C',
       condition: 'Brisk Forest Air',
       forecast: 'Enchanting roaring mist'
-    }
+    },
+    crowdStatus: 'Low',
+    crowdAdvice: 'Highest waterfall in Jharkhand (143 meters). Best visited with a local vehicle from Latehar.',
+    ecoAdvisories: [
+      'Remote forest road — ensure return before dark',
+      'Strict forest fire prevention zone'
+    ],
+    audioGuideText: 'Welcome to Lodh Falls, also known as Burha Ghagh, the undisputed highest waterfall in Jharkhand plunging 143 meters deep inside Latehar\'s dense wilderness. The roaring sound of water is heard from over 10 kilometers away.',
+    audioGuideHindi: 'लोध जलप्रपात (बूढ़ा घाघ) झारखंड का सबसे ऊंचा जलप्रपात है जो 143 मीटर की ऊंचाई से गिरता है। इसकी गर्जना 10 किलोमीटर दूर तक सुनी जा सकती है।'
   },
   {
     id: 'rajrappa',
@@ -485,7 +573,15 @@ export const DESTINATIONS: Destination[] = [
       temp: '24°C',
       condition: 'Sunny & River Breeze',
       forecast: 'Lively spiritual atmosphere'
-    }
+    },
+    crowdStatus: 'High / Peak Rush',
+    crowdAdvice: 'Auspicious Shaktipeeth at the confluence of Bhairavi and Damodar rivers. Expect queues on Tuesdays, Saturdays, and Navratri.',
+    ecoAdvisories: [
+      'River confluence — obey bathing safety barricades',
+      'Respect ancient Tantric heritage'
+    ],
+    audioGuideText: 'Welcome to Rajrappa, home to the ancient and powerful Maa Chhinnamastika Temple. Situated at the dramatic geological confluence of the Damodar and Bhairavi rivers, this Shaktipeeth is one of India\'s most revered tantric pilgrimage centers.',
+    audioGuideHindi: 'मां छिन्नमस्तिका मंदिर रजरप्पा में आपका स्वागत है। दामोदर और भैरवी नदी के पावन संगम पर स्थित यह सिद्ध शक्तिपीठ तंत्र साधना और आस्था का महाकेंद्र है।'
   }
 ];
 

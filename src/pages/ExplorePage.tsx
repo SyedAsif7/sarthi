@@ -10,7 +10,9 @@ import {
   SlidersHorizontal,
   Compass,
   Check,
-  Plus
+  Plus,
+  Volume2,
+  Users
 } from 'lucide-react';
 import { DESTINATIONS } from '../data/destinations';
 import { Destination } from '../types';
@@ -31,6 +33,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>(preselectedCategory || 'All');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('All');
   const [budgetFilter, setBudgetFilter] = useState<string>('All');
+  const [crowdFilter, setCrowdFilter] = useState<string>('All');
   const [minRating, setMinRating] = useState<number>(0);
   const [sortBy, setSortBy] = useState<'rating' | 'cost-low' | 'cost-high' | 'distance'>('rating');
 
@@ -60,10 +63,13 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
       if (budgetFilter === '500-1000') matchesBudget = d.approxCost > 500 && d.approxCost <= 1000;
       if (budgetFilter === 'above-1000') matchesBudget = d.approxCost > 1000;
 
+      // Crowd
+      const matchesCrowd = crowdFilter === 'All' || d.crowdStatus === crowdFilter;
+
       // Rating
       const matchesRating = d.rating >= minRating;
 
-      return matchesSearch && matchesCategory && matchesDistrict && matchesBudget && matchesRating;
+      return matchesSearch && matchesCategory && matchesDistrict && matchesBudget && matchesCrowd && matchesRating;
     }).sort((a, b) => {
       if (sortBy === 'rating') return b.rating - a.rating;
       if (sortBy === 'cost-low') return a.approxCost - b.approxCost;
@@ -71,7 +77,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
       if (sortBy === 'distance') return a.distanceRanchi - b.distanceRanchi;
       return 0;
     });
-  }, [searchQuery, selectedCategory, selectedDistrict, budgetFilter, minRating, sortBy]);
+  }, [searchQuery, selectedCategory, selectedDistrict, budgetFilter, crowdFilter, minRating, sortBy]);
 
   return (
     <div className="space-y-10 pb-20 animate-fadeIn">
@@ -105,7 +111,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
         </div>
 
         {/* Filter Pills Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 text-xs">
           
           {/* Category Filter */}
           <div className="space-y-1.5">
@@ -150,6 +156,21 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
             </select>
           </div>
 
+          {/* Crowd Footfall Filter */}
+          <div className="space-y-1.5">
+            <label className="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Crowd Level</label>
+            <select
+              value={crowdFilter}
+              onChange={(e) => setCrowdFilter(e.target.value)}
+              className="w-full p-2.5 rounded-xl border border-slate-200 font-medium bg-white focus:outline-none focus:border-forest-600"
+            >
+              <option value="All">All Footfall</option>
+              <option value="Low">🟢 Low Crowd</option>
+              <option value="Moderate">🟡 Moderate</option>
+              <option value="High / Peak Rush">🔴 Peak Rush</option>
+            </select>
+          </div>
+
           {/* Sort By */}
           <div className="space-y-1.5">
             <label className="font-bold text-slate-700 uppercase tracking-wider text-[11px]">Sort By</label>
@@ -169,13 +190,14 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
         {/* Results Counter and Reset */}
         <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
           <span>Showing <strong>{filteredDestinations.length}</strong> matching destinations</span>
-          {(searchQuery || selectedCategory !== 'All' || selectedDistrict !== 'All' || budgetFilter !== 'All') && (
+          {(searchQuery || selectedCategory !== 'All' || selectedDistrict !== 'All' || budgetFilter !== 'All' || crowdFilter !== 'All') && (
             <button
               onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('All');
                 setSelectedDistrict('All');
                 setBudgetFilter('All');
+                setCrowdFilter('All');
               }}
               className="text-forest-700 font-bold hover:underline"
             >
@@ -243,6 +265,28 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({
                     <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                       {dest.shortDescription}
                     </p>
+                  </div>
+
+                  {/* Crowd Footfall & Audio Guide Badges */}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border flex items-center gap-1 ${
+                      dest.crowdStatus === 'Low' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' :
+                      dest.crowdStatus === 'Moderate' ? 'bg-amber-50 text-amber-800 border-amber-300' :
+                      'bg-rose-50 text-rose-800 border-rose-300'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        dest.crowdStatus === 'Low' ? 'bg-emerald-500' :
+                        dest.crowdStatus === 'Moderate' ? 'bg-amber-500' : 'bg-rose-500'
+                      }`} />
+                      <span>{dest.crowdStatus || 'Moderate'}</span>
+                    </span>
+
+                    {dest.audioGuideText && (
+                      <span className="px-2 py-0.5 rounded-full bg-forest-50 text-forest-800 text-[10px] font-semibold border border-forest-200 flex items-center gap-1">
+                        <Volume2 className="w-2.5 h-2.5 text-gold-600" />
+                        <span>Audio Tour</span>
+                      </span>
+                    )}
                   </div>
 
                   {/* Best Time & Approx Cost */}

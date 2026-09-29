@@ -90,3 +90,31 @@
 .animate-pulse-glow {
   animation: pulseGlow 3s ease-in-out infinite;
 }
+
+/* Print / PDF Stylesheet for Itinerary Dockets */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  header, 
+  nav, 
+  footer, 
+  .no-print,
+  #floating-chat-root,
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+
+  /* Make sure background colors and borders print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page {
+    margin: 1.5cm;
+    size: auto;
+  }
+}
