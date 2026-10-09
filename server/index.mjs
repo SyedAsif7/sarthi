@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 
-// Load .env manually if process.env.OPENAI_API_KEY is not already set
+// Load .env manually if process.env.GEMINI_API_KEY is not already set
 function loadEnvFile() {
   try {
     const envPath = path.join(ROOT_DIR, '.env');
