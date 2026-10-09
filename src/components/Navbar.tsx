@@ -29,11 +29,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab, 
   setActiveTab, 
   onOpenDemoGuide,
+  currentLanguage = 'en',
   onChangeLanguage
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeLang, setActiveLang] = useState<string>('en');
+  const [activeLang, setActiveLang] = useState<string>(currentLanguage || 'en');
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (currentLanguage) {
+      setActiveLang(currentLanguage);
+    }
+  }, [currentLanguage]);
 
   const nativeLanguages = [
     { code: 'en', label: 'English' },

@@ -41,6 +41,7 @@ interface TripPlannerPageProps {
   onViewRouteOnMap: (itin: GeneratedItinerary) => void;
   onAskSarthiWithContext: (itin: GeneratedItinerary) => void;
   onSelectDestinationById: (destId: string) => void;
+  activeLanguage?: string;
 }
 
 export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
@@ -50,6 +51,7 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
   onViewRouteOnMap,
   onAskSarthiWithContext,
   onSelectDestinationById,
+  activeLanguage,
 }) => {
   // Form State
   const [selectedState, setSelectedState] = useState<string>('All India');
@@ -62,6 +64,23 @@ export const TripPlannerPage: React.FC<TripPlannerPageProps> = ({
   const [travelDate, setTravelDate] = useState('2026-10-15');
   const [travelStyle, setTravelStyle] = useState<'Budget' | 'Comfort' | 'Premium'>('Comfort');
   const [preferredLanguage, setPreferredLanguage] = useState<'English' | 'Hindi' | 'Bengali' | 'Tamil' | 'Marathi' | 'Santali'>('English');
+
+  // Sync preferred language from global activeLanguage
+  React.useEffect(() => {
+    if (activeLanguage) {
+      const map: Record<string, 'English' | 'Hindi' | 'Bengali' | 'Tamil' | 'Marathi' | 'Santali'> = {
+        en: 'English',
+        hi: 'Hindi',
+        bn: 'Bengali',
+        ta: 'Tamil',
+        mr: 'Marathi',
+        sat: 'Santali'
+      };
+      if (map[activeLanguage]) {
+        setPreferredLanguage(map[activeLanguage]);
+      }
+    }
+  }, [activeLanguage]);
   const [transportation, setTransportation] = useState<'Car' | 'Bus' | 'Train' | 'Public Transport'>('Train');
   
   // Multi-select interests

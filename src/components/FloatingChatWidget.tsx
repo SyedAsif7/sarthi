@@ -31,6 +31,8 @@ import { INDIAN_LANGUAGES, LanguageConfig, getUILabels, detectIndianLanguage } f
 interface FloatingChatWidgetProps {
   onNavigateTab: (tab: string) => void;
   onOpenTripPlanner: () => void;
+  activeLanguage?: string;
+  onChangeLanguage?: (lang: string) => void;
 }
 
 interface QuickPrompt {
@@ -66,10 +68,18 @@ const PROMPT_SUGGESTIONS: QuickPrompt[] = [
 export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
   onNavigateTab,
   onOpenTripPlanner,
+  activeLanguage,
+  onChangeLanguage,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('auto');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(activeLanguage || 'auto');
+
+  useEffect(() => {
+    if (activeLanguage) {
+      setSelectedLanguage(activeLanguage);
+    }
+  }, [activeLanguage]);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [languageSearch, setLanguageSearch] = useState('');
   

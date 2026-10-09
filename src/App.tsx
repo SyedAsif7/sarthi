@@ -60,6 +60,16 @@ export function App() {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
 
+  // Global Active Language State (synced across Navbar, Chat Assistant, Trip Planner)
+  const [currentLanguage, setCurrentLanguage] = useState<string>(() => {
+    return localStorage.getItem('sarthi_lang') || 'en';
+  });
+
+  const handleLanguageChange = (langCode: string) => {
+    setCurrentLanguage(langCode);
+    localStorage.setItem('sarthi_lang', langCode);
+  };
+
   // Handle URL hash changes & Offline/Install listeners
   useEffect(() => {
     const handleHash = () => {
@@ -211,6 +221,8 @@ export function App() {
         activeTab={activeTab}
         setActiveTab={handleTabChange}
         onOpenDemoGuide={() => setIsDemoGuideOpen(true)}
+        currentLanguage={currentLanguage}
+        onChangeLanguage={handleLanguageChange}
       />
 
       {/* Main Content Area */}
@@ -238,6 +250,7 @@ export function App() {
               const d = DESTINATIONS.find(x => x.id === destId);
               if (d) setSelectedDestination(d);
             }}
+            activeLanguage={currentLanguage}
           />
         )}
 
@@ -250,6 +263,8 @@ export function App() {
               handleTabChange('explore');
             }}
             contextItineraryPrompt={contextPromptForChat}
+            activeLanguage={currentLanguage}
+            onChangeLanguage={handleLanguageChange}
           />
         )}
 
@@ -335,6 +350,8 @@ export function App() {
       <FloatingChatWidget
         onNavigateTab={handleTabChange}
         onOpenTripPlanner={() => handleTabChange('planner')}
+        activeLanguage={currentLanguage}
+        onChangeLanguage={handleLanguageChange}
       />
 
       {/* Global Modals */}

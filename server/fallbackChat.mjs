@@ -1,6 +1,46 @@
 // Verified Heuristic Generator for Indian Tourism (Pure ES Module for Node server)
 export function generateVerifiedFallbackResponse(query, language = 'en') {
   const q = (query || '').toLowerCase();
+  const cleanQ = q.replace(/[^\w\s\u0900-\u0D7F]/g, '').trim();
+
+  // Natural conversational greetings (hi, hii, hello, hey, namaste, etc.)
+  const isGreeting = /^(hi+|hello+|hey+|namaste+|namaskar+|pranam+|vanakkam+|khammaghani+|hola+|greetings+|good\s*(morning|evening|afternoon))$/i.test(cleanQ);
+
+  if (isGreeting) {
+    if (language === 'hi' || cleanQ.includes('नमस्ते') || cleanQ.includes('प्रणाम')) {
+      return `नमस्ते! 🙏 मैं **सारथी AI (SARTHI AI)** हूँ—भारत का आपका बुद्धिमान सतत एवं सांस्कृतिक यात्रा साथी।
+
+मैं आपकी इन विषयों में सहायता कर सकता हूँ:
+• 🗺️ आपके बजट और पसंद के अनुसार **पर्यावरण-अनुकूल यात्रा कार्यक्रम (Eco Itineraries)** तैयार करना
+• 🏡 प्रमाणित **समुदाय-संचालित ग्रामीण होमस्टे** खोजना जो सीधे स्थानीय परिवारों को सशक्त बनाते हैं
+• 🌿 पारदर्शी **सारथी इम्पैक्ट स्कोर** के साथ हरित यात्रा विकल्पों का मूल्यांकन करना
+• 🎨 सभी २८ राज्यों और ८ केंद्र शासित प्रदेशों में **जीवंत सांस्कृतिक धरोहर, जीआई हस्तशिल्प और स्थानीय व्यंजनों** की खोज करना
+
+आप भारत में कहाँ की यात्रा करना चाहते हैं, या आज मैं आपकी क्या सहायता कर सकता हूँ?`;
+    }
+
+    if (language === 'mr' || cleanQ.includes('नमस्कार')) {
+      return `नमस्कार! 🙏 मी **सारथी AI (SARTHI AI)** आहे—भारतातील शाश्वत आणि सांस्कृतिक पर्यटनासाठी आपला बुद्धिमान AI प्रवासी मित्र.
+
+मी आपल्याला पुढील गोष्टींमध्ये मदत करू शकतो:
+• 🗺️ आपल्या बजेटनुसार **पर्यावरणपूरक सहलींचे वैयक्तिकृत नियोजन (Eco Itineraries)**
+• 🏡 स्थानिक ग्रामस्थांना आर्थिक हातभार लावणारे **प्रमाणित होमस्टे**
+• 🌿 **सारथी इम्पॅक्ट स्कोर** सह पर्यावरणपूरक प्रवासाची निवड
+• 🎨 **ऐतिहासिक किल्ले, लेणी, वारली कला आणि समृद्ध लोकसंस्कृतीची** माहिती
+
+आपण कुठे प्रवास करू इच्छिता, किंवा मी आज आपली काय मदत करू शकतो?`;
+    }
+
+    return `Namaste! 🙏 I am **SARTHI AI**, an intelligent sustainable and cultural tourism companion for India.
+
+I can help you:
+• 🗺️ **Plan personalized low-carbon itineraries** tailored to your budget, dates, and interests
+• 🏡 **Find certified community homestays** that keep revenue directly with local families
+• 🌿 **Evaluate travel choices** with our explainable 100-point SARTHI Impact Score
+• 🎨 **Discover living cultural heritage, GI crafts & regional cuisines** across all 28 States and 8 Union Territories
+
+Where would you like to travel in India, or what can I help you plan today?`;
+  }
 
   // Multi-language greetings & specific scenarios
   if (language === 'mr' || q.includes('महाराष्ट्र') || q.includes('maharashtra') || q.includes('ajanta') || q.includes('ellora') || q.includes('kaas') || q.includes('किल्ले')) {

@@ -29,6 +29,8 @@ interface ChatAssistantPageProps {
   onNavigateTab: (tab: string) => void;
   onExploreFilter?: (cat: string) => void;
   contextItineraryPrompt?: string;
+  activeLanguage?: string;
+  onChangeLanguage?: (lang: string) => void;
 }
 
 interface PromptTopic {
@@ -190,13 +192,21 @@ export const ChatAssistantPage: React.FC<ChatAssistantPageProps> = ({
   onNavigateTab,
   onExploreFilter,
   contextItineraryPrompt,
+  activeLanguage,
+  onChangeLanguage,
 }) => {
   // Messages state with session restoration
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadChatSession());
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('auto');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(activeLanguage || 'auto');
+
+  useEffect(() => {
+    if (activeLanguage) {
+      setSelectedLanguage(activeLanguage);
+    }
+  }, [activeLanguage]);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [languageSearch, setLanguageSearch] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -987,6 +997,7 @@ export const ChatAssistantPage: React.FC<ChatAssistantPageProps> = ({
                       key={lang.code}
                       onClick={() => {
                         setSelectedLanguage(lang.code);
+                        if (onChangeLanguage) onChangeLanguage(lang.code);
                         setIsLanguageModalOpen(false);
                       }}
                       className={`p-3 rounded-2xl text-left border transition-all flex items-start justify-between cursor-pointer ${
