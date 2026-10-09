@@ -79,7 +79,7 @@ export const QuickDemoModal: React.FC<QuickDemoModalProps> = ({
     },
     {
       step: 7,
-      title: 'Government / SIH Admin Analytics',
+      title: 'Government / Sustainable Admin Analytics',
       desc: 'Sustainable tourism metrics, tourist footfall, and direct revenue to tribal artisans.',
       tab: 'admin',
       actionText: 'View Admin Portal',
@@ -99,9 +99,9 @@ export const QuickDemoModal: React.FC<QuickDemoModalProps> = ({
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold font-serif">SIH 2026 Hackathon Demo Flow</h3>
+                <h3 className="text-xl font-bold font-serif">Interactive Platform Walkthrough</h3>
                 <p className="text-xs text-forest-200">
-                  Recommended 2–3 Minute Presentation Sequence for Jury Evaluation
+                  Recommended Feature Exploration Guide
                 </p>
               </div>
             </div>
@@ -115,7 +115,7 @@ export const QuickDemoModal: React.FC<QuickDemoModalProps> = ({
 
           <div className="mt-4 p-3 bg-forest-800/60 rounded-xl border border-forest-700 flex items-center justify-between gap-3">
             <div className="text-xs text-gold-300">
-              <span className="font-bold">⚡ 1-Click SIH Preset:</span> Auto-fills ₹10,000 budget, 3 days, 2 travellers, Nature + Culture and switches to Trip Planner!
+              <span className="font-bold">⚡ 1-Click Itinerary Preset:</span> Auto-fills ₹12,000 budget, 3 days, 2 travellers, Nature + Culture and switches to Trip Planner!
             </div>
             <button
               onClick={() => {

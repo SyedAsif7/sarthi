@@ -30,23 +30,23 @@ export function App() {
   // Active Itinerary State (pre-seeded with default 3-day itinerary so the Map & Results are immediately impressive!)
   const [currentItinerary, setCurrentItinerary] = useState<GeneratedItinerary | null>(() => {
     return generateItinerary({
-      startingLocation: 'Ranchi',
-      destinationRegion: 'Chotanagpur Plateau & Waterfalls',
-      budget: 10000,
+      startingLocation: 'New Delhi / Gateway Hub',
+      destinationRegion: 'Himachal Pradesh (Spiti & Kullu)',
+      budget: 15000,
       isCustomBudget: false,
       numberOfDays: 3,
       numberOfTravellers: 2,
       travelDate: '2026-10-15',
-      interests: ['Nature', 'Waterfalls', 'Culture'],
+      interests: ['Nature', 'Culture', 'Adventure'],
       travelStyle: 'Comfort',
       preferredLanguage: 'English',
-      transportation: 'Car'
+      transportation: 'Train'
     });
   });
 
   // Saved Trips and Wishlist
   const [savedTrips, setSavedTrips] = useState<GeneratedItinerary[]>([]);
-  const [savedDestinationIds, setSavedDestinationIds] = useState<string[]>(['dassam-falls', 'netarhat']);
+  const [savedDestinationIds, setSavedDestinationIds] = useState<string[]>(['spiti-valley', 'munroe-island']);
 
   // Modals State
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
@@ -63,9 +63,10 @@ export function App() {
   // Handle URL hash changes & Offline/Install listeners
   useEffect(() => {
     const handleHash = () => {
-      const hash = window.location.hash.replace('#/', '').replace('#', '');
-      if (hash === 'admin') {
-        setActiveTab('admin');
+      const hash = window.location.hash.replace('#/', '').replace('#', '').toLowerCase();
+      const validTabs = ['home', 'explore', 'planner', 'map', 'marketplace', 'assistant', 'chat', 'calendar', 'safety', 'profile', 'admin'];
+      if (validTabs.includes(hash)) {
+        setActiveTab(hash === 'chat' ? 'assistant' : hash);
       }
     };
     handleHash();
@@ -99,15 +100,15 @@ export function App() {
     }
   };
 
-  // Update hash when tab changes to admin or others
+  // Update hash when tab changes
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-    if (tab === 'admin') {
-      window.location.hash = '/admin';
-    } else {
-      if (window.location.hash === '#/admin') {
+    if (tab === 'home') {
+      if (window.location.hash) {
         window.history.pushState('', document.title, window.location.pathname);
       }
+    } else {
+      window.location.hash = `/${tab}`;
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -145,7 +146,7 @@ export function App() {
     handleTabChange('assistant');
   };
 
-  // Run Hackathon Demo Preset (from Demo Guide)
+  // Run Demo Preset (from Demo Guide)
   const handleRunDemoPreset = () => {
     const preset = generateItinerary({
       startingLocation: 'Ranchi',
@@ -173,7 +174,7 @@ export function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#faf8f4]">
       
-      {/* Offline Alert Bar (SIH Resilience Feature for Remote Forest Areas) */}
+      {/* Offline Alert Bar (Resilience Feature for Remote Areas) */}
       {isOffline && (
         <div className="bg-emerald-950 text-emerald-100 text-xs py-2 px-4 text-center font-medium flex items-center justify-center gap-2 border-b border-emerald-800 shadow-inner z-50 sticky top-0 animate-fadeIn">
           <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
@@ -252,7 +253,7 @@ export function App() {
           />
         )}
 
-        {/* EXPLORE JHARKHAND PAGE */}
+        {/* EXPLORE DESTINATIONS PAGE */}
         {activeTab === 'explore' && (
           <ExplorePage
             onSelectDestination={(dest) => setSelectedDestination(dest)}
@@ -266,13 +267,13 @@ export function App() {
           <div className="space-y-6 pb-20 animate-fadeIn">
             <div className="text-center max-w-3xl mx-auto space-y-2">
               <span className="text-xs font-bold uppercase tracking-wider text-forest-700 bg-forest-100 px-3.5 py-1 rounded-full">
-                Geographic Exploration
+                National Spatial Exploration
               </span>
               <h1 className="text-3xl sm:text-4xl font-extrabold font-serif text-slate-900">
-                Jharkhand Tourism Map
+                Interactive Pan-India Tourism Map
               </h1>
               <p className="text-sm text-slate-600">
-                Interactive spatial view of waterfalls, national parks, and heritage circuits with route clustering.
+                Spatial discovery across 15+ States and Union Territories with state filtering, route visualization, and explainable SARTHI Impact Scores.
               </p>
             </div>
 
@@ -325,7 +326,7 @@ export function App() {
           />
         )}
 
-        {/* GOVERNMENT / SIH ADMIN ANALYTICS DASHBOARD (/admin) */}
+        {/* GOVERNMENT / ADMIN ANALYTICS DASHBOARD (/admin) */}
         {activeTab === 'admin' && (
           <AdminDashboardPage />
         )}

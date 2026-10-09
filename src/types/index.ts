@@ -7,11 +7,55 @@ export type DestinationCategory =
   | 'Spiritual' 
   | 'Heritage';
 
+export interface ImpactCategoryScore {
+  score: number;
+  maxScore: number;
+  metricText: string;
+  explanation: string;
+}
+
+export interface SarthiImpactScore {
+  overallScore: number; // 0 - 100
+  tier: 'Eco Pioneer (85-100)' | 'High Sustainable (75-84)' | 'Conscious Travel (65-74)' | 'Developing Eco-Track';
+  
+  // Official 5 Categories (Total: 100 points)
+  categories?: {
+    environmentalSustainability: ImpactCategoryScore; // Max 30 pts
+    localEconomicContribution: ImpactCategoryScore;   // Max 25 pts
+    culturalHeritageEngagement: ImpactCategoryScore;  // Max 20 pts
+    sustainableTransportation: ImpactCategoryScore;   // Max 15 pts
+    responsibleTourismPractices: ImpactCategoryScore; // Max 10 pts
+  };
+
+  // Backward compatibility fields
+  carbonEfficiency?: {
+    score: number; // out of 30
+    metricText: string;
+    transitType?: 'Electric / Shared Transit' | 'Trek / Footpath Friendly' | 'Rail Accessible' | 'Road Corridor';
+  };
+  communityBenefit?: {
+    score: number; // out of 35
+    economicRetentionPct: number; // e.g., 78% stays with local families/artisans
+    metricText: string;
+  };
+  conservationSensitivity?: {
+    score: number; // out of 35
+    carryingCapacity: 'Regulated / Low Impact' | 'Protected Reserve' | 'High Footfall Regulated';
+    metricText: string;
+  };
+  
+  explanation: string;
+  sustainableRecommendations: string[];
+  assumptionsDisclaimer?: string;
+}
+
 export interface Destination {
   id: string;
   name: string;
   hindiName?: string;
   district: string;
+  state: string;
+  zone?: 'North' | 'South' | 'East' | 'West' | 'Northeast' | 'Central';
   category: DestinationCategory;
   rating: number;
   reviewsCount: number;
@@ -19,7 +63,8 @@ export interface Destination {
   bestTime: string;
   timings: string;
   entryFee: string;
-  distanceRanchi: number; // km from Ranchi
+  distanceRanchi?: number; // km from Ranchi (backward compat)
+  distanceFromHub?: { hubName: string; km: number };
   coordinates: [number, number]; // [lat, lng]
   image: string;
   gallery?: string[];
@@ -47,10 +92,15 @@ export interface Destination {
   ecoAdvisories?: string[];
   audioGuideText?: string;
   audioGuideHindi?: string;
+  culturalSignificance?: string;
+  indigenousCrafts?: string[];
+  sarthiImpactScore?: SarthiImpactScore;
+  recommendationReason?: string;
 }
 
 export interface TripPlanRequest {
   startingLocation: string;
+  selectedState?: string;
   destinationRegion: string;
   budget: number;
   isCustomBudget: boolean;
@@ -59,7 +109,7 @@ export interface TripPlanRequest {
   travelDate: string;
   interests: string[];
   travelStyle: 'Budget' | 'Comfort' | 'Premium';
-  preferredLanguage: 'English' | 'Hindi' | 'Santhali' | 'Ho' | 'Mundari' | 'Marathi';
+  preferredLanguage: 'English' | 'Hindi' | 'Bengali' | 'Tamil' | 'Marathi' | 'Santali' | 'Telugu' | 'Kannada';
   transportation: 'Car' | 'Bus' | 'Train' | 'Public Transport';
 }
 
@@ -74,6 +124,7 @@ export interface ItineraryActivity {
   costEstimate: number;
   image?: string;
   coordinates?: [number, number];
+  recommendationReason?: string;
 }
 
 export interface DayPlan {
@@ -100,11 +151,46 @@ export interface DayPlan {
   routeNotes?: string;
 }
 
+export interface ItineraryComparisonMetrics {
+  planA: {
+    name: string;
+    badge: string;
+    estimatedSpend: number;
+    totalDistanceKm: number;
+    impactScore: number;
+    communityRetentionPct: number;
+    culturalExperiencesCount: number;
+    transportMode: string;
+    stayType: string;
+    keyPros: string[];
+  };
+  planB: {
+    name: string;
+    badge: string;
+    estimatedSpend: number;
+    totalDistanceKm: number;
+    impactScore: number;
+    communityRetentionPct: number;
+    culturalExperiencesCount: number;
+    transportMode: string;
+    stayType: string;
+    keyPros: string[];
+  };
+  comparisonHighlights: {
+    costDiff: number; // Positive means planA saves money
+    scoreDiff: number; // Positive means planA has higher sustainability
+    distanceDiff: number;
+    localRetentionGainPct: number;
+    summaryText: string;
+  };
+}
+
 export interface GeneratedItinerary {
   id: string;
   title: string;
   summary: string;
   startingLocation: string;
+  selectedState?: string;
   destinationRegion: string;
   totalBudget: number;
   estimatedSpend: number;
@@ -119,6 +205,9 @@ export interface GeneratedItinerary {
   routeCoordinates: { name: string; coordinates: [number, number]; day: number }[];
   totalDistanceKm: number;
   estimatedTravelTime: string;
+  sarthiImpactScore?: SarthiImpactScore;
+  comparisonMetrics?: ItineraryComparisonMetrics;
+  comparisonPlan?: GeneratedItinerary;
   createdAt: string;
 }
 
@@ -207,9 +296,14 @@ export interface ChatMessage {
   sender: 'user' | 'sarthi';
   text: string;
   timestamp: string;
+  isStreaming?: boolean;
+  languageCode?: string;
+  source?: 'openai' | 'gemini' | 'sarthi-engine';
+  error?: boolean;
   suggestedActions?: {
     label: string;
     actionType: 'plan' | 'explore' | 'map' | 'marketplace' | 'prompt';
     payload?: string;
   }[];
 }
+

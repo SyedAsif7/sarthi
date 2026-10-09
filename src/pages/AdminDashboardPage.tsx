@@ -52,7 +52,7 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="flex items-center gap-2 flex-wrap">
               <span className="px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-400/40 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Building className="w-3.5 h-3.5" />
-                Department of Tourism, Government of Jharkhand
+                Ministry of Tourism & State Tourism Boards — National Tourism Intelligence Portal
               </span>
               <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-400/30 text-xs font-bold uppercase tracking-wider">
                 Demo / Sample Data
@@ -60,10 +60,10 @@ export const AdminDashboardPage: React.FC = () => {
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-extrabold font-serif text-white tracking-tight">
-              Statewide Tourism Intelligence & Analytics Portal
+              National Tourism Intelligence & Sustainable Analytics Portal
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl">
-              SIH 2026 Administrative Cockpit: Tracking real-time tourist footfall, AI itinerary patterns, tribal artisan economic benefits, and eco-conservation scores.
+              National Tourism Cockpit: Tracking real-time tourist footfall, AI itinerary corridors, indigenous artisan economic dividends, and eco-conservation scores across Indian states.
             </p>
           </div>
 
@@ -184,7 +184,7 @@ export const AdminDashboardPage: React.FC = () => {
             {ADMIN_STATS.popularCategory}
           </span>
           <p className="text-xs text-slate-500">
-            Dassam, Hundru, Lodh & Jonha combined account for over 520,000 seasonal visits.
+            High-altitude Himalayan circuits, Kerala backwaters, and indigenous forest trails account for over 1.4M seasonal visits.
           </p>
         </div>
 
@@ -245,11 +245,11 @@ export const AdminDashboardPage: React.FC = () => {
                 Destinations by Annual Footfall
               </h3>
               <p className="text-xs text-slate-500">
-                Visitor volume across Jharkhand’s top registered attractions
+                Visitor volume across India’s top registered attractions
               </p>
             </div>
             <span className="text-xs font-bold text-gold-800 bg-gold-50 px-2.5 py-1 rounded-xl">
-              Deoghar #1
+              Spiti #1
             </span>
           </div>
 
@@ -367,11 +367,11 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* SIH Sustainable Tourism Compliance Roster */}
+        {/* Direct Community Economic Beneficiary Ledger */}
         <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200/90 shadow-soft space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-base text-slate-900 font-serif">
-              SIH Direct Economic Beneficiary Ledger (Sample Batch)
+              Direct Economic Beneficiary Ledger (Sample Batch)
             </h3>
             <span className="text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full font-bold">
               100% Payout Verified
@@ -384,38 +384,45 @@ export const AdminDashboardPage: React.FC = () => {
                 <tr>
                   <th className="p-3">Beneficiary</th>
                   <th className="p-3">Category</th>
-                  <th className="p-3">District</th>
+                  <th className="p-3">Region / State</th>
                   <th className="p-3">Revenue Transferred</th>
                   <th className="p-3">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 <tr>
+                  <td className="p-3 font-bold text-slate-900">Tenzin Norbu & Spiti Co-op</td>
+                  <td className="p-3 text-slate-600">Solar Hearth Homestays</td>
+                  <td className="p-3 text-slate-600">Spiti Valley (HP)</td>
+                  <td className="p-3 font-mono font-bold text-forest-900">₹8,45,000</td>
+                  <td className="p-3"><span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Disbursed ✓</span></td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-900">Sreejith K. & Canoe Guild</td>
+                  <td className="p-3 text-slate-600">Silent Backwater Tours</td>
+                  <td className="p-3 text-slate-600">Munroe Island (KL)</td>
+                  <td className="p-3 font-mono font-bold text-forest-900">₹7,10,000</td>
+                  <td className="p-3"><span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Disbursed ✓</span></td>
+                </tr>
+                <tr>
+                  <td className="p-3 font-bold text-slate-900">Khatri Artisan Collective</td>
+                  <td className="p-3 text-slate-600">GI Rogan Art Guild</td>
+                  <td className="p-3 text-slate-600">Kutch (GJ)</td>
+                  <td className="p-3 font-mono font-bold text-forest-900">₹5,60,000</td>
+                  <td className="p-3"><span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Disbursed ✓</span></td>
+                </tr>
+                <tr>
                   <td className="p-3 font-bold text-slate-900">Malati Devi & Women SHG</td>
                   <td className="p-3 text-slate-600">Sohrai Canvas Paintings</td>
-                  <td className="p-3 text-slate-600">Hazaribagh</td>
+                  <td className="p-3 text-slate-600">Hazaribagh (JH)</td>
                   <td className="p-3 font-mono font-bold text-forest-900">₹4,84,000</td>
                   <td className="p-3"><span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Disbursed ✓</span></td>
                 </tr>
                 <tr>
                   <td className="p-3 font-bold text-slate-900">Budheshwar Karmakar</td>
                   <td className="p-3 text-slate-600">Dhokra Metal Art Cluster</td>
-                  <td className="p-3 text-slate-600">Khunti</td>
+                  <td className="p-3 text-slate-600">Khunti (JH)</td>
                   <td className="p-3 font-mono font-bold text-forest-900">₹3,92,500</td>
-                  <td className="p-3"><span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Disbursed ✓</span></td>
-                </tr>
-                <tr>
-                  <td className="p-3 font-bold text-slate-900">Mangra Tribal Eco-Homestay</td>
-                  <td className="p-3 text-slate-600">Community Homestay</td>
-                  <td className="p-3 text-slate-600">Netarhat</td>
-                  <td className="p-3 font-mono font-bold text-forest-900">₹6,28,000</td>
-                  <td className="p-3"><span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Disbursed ✓</span></td>
-                </tr>
-                <tr>
-                  <td className="p-3 font-bold text-slate-900">Amit Kumar & 14 Guides</td>
-                  <td className="p-3 text-slate-600">Eco-Trekking Guides Guild</td>
-                  <td className="p-3 text-slate-600">Ranchi / Dassam</td>
-                  <td className="p-3 font-mono font-bold text-forest-900">₹5,40,000</td>
                   <td className="p-3"><span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">Disbursed ✓</span></td>
                 </tr>
               </tbody>

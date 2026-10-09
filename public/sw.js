@@ -1,5 +1,5 @@
-// SARTHI Service Worker — SIH 2026 Offline Resilience
-const CACHE_NAME = 'sarthi-v1.2';
+// SARTHI Service Worker — Offline Resilience
+const CACHE_NAME = 'sarthi-v1.3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

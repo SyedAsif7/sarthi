@@ -28,13 +28,13 @@ export const CulturalCalendarPage: React.FC<CulturalCalendarPageProps> = ({
       {/* Header as requested in prompt */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <span className="text-xs font-bold uppercase tracking-wider text-coral-700 bg-coral-100 px-3.5 py-1 rounded-full">
-          Cultural Heritage & Seasons
+          Cultural Heritage & Seasons of India
         </span>
         <h1 className="text-3xl sm:text-5xl font-extrabold font-serif text-slate-900 tracking-tight">
-          What's Happening in Jharkhand?
+          Festivals & Living Heritage of India
         </h1>
         <p className="text-sm sm:text-base text-slate-600">
-          Sync your journey with nature worship, ancient agricultural rhythms, and sacred tribal fairs celebrated with Mandar drums and Sal flowers.
+          Sync your journey with nature worship, harvest dances, and spiritual celebrations across 28 States and 8 Union Territories.
         </p>
       </div>
 

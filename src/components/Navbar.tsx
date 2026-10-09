@@ -38,24 +38,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   const nativeLanguages = [
     { code: 'en', label: 'English' },
     { code: 'hi', label: 'हिंदी' },
+    { code: 'bn', label: 'বাংলা' },
+    { code: 'ta', label: 'தமிழ்' },
+    { code: 'mr', label: 'मराठी' },
     { code: 'sat', label: 'संथाली' },
-    { code: 'ho', label: 'हो' },
-    { code: 'mun', label: 'मुंडारी' },
   ];
 
   const primaryNavItems = [
     { id: 'home', label: 'Home', icon: Compass },
-    { id: 'explore', label: 'Explore', icon: MapPin },
+    { id: 'explore', label: 'Explore India', icon: MapPin },
     { id: 'planner', label: 'AI Trip Planner', icon: Sparkles, highlight: true },
-    { id: 'map', label: 'Map', icon: Navigation },
-    { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
+    { id: 'map', label: 'Interactive Map', icon: Navigation },
+    { id: 'marketplace', label: 'Artisans & Stays', icon: ShoppingBag },
   ];
 
   const secondaryNavItems = [
-    { id: 'assistant', label: 'Sarthi AI', icon: Bot, badge: 'AI' },
-    { id: 'calendar', label: 'Festivals', icon: Calendar },
+    { id: 'assistant', label: 'SARTHI AI Assistant', icon: Bot, badge: 'AI' },
+    { id: 'calendar', label: 'Festivals & Heritage', icon: Calendar },
     { id: 'safety', label: 'Safety & Help', icon: ShieldCheck },
-    { id: 'admin', label: 'Govt Portal', icon: BarChart3, admin: true },
+    { id: 'admin', label: 'Govt Impact Portal', icon: BarChart3, admin: true },
   ];
 
   const handleNavClick = (id: string) => {
@@ -73,7 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#2D5224] text-white shadow-lg relative overflow-visible transition-all select-none">
       
-      {/* Organic Curved Wave Banner matching user's reference image */}
+      {/* Organic Curved Wave Banner */}
       <div className="absolute top-0 right-0 w-3/5 h-full pointer-events-none opacity-45 overflow-hidden">
         <svg viewBox="0 0 500 150" preserveAspectRatio="none" className="w-full h-full">
           <path d="M120,0 C260,130 380,10 500,70 L500,0 L120,0 Z" fill="#994D2A" />
@@ -84,17 +85,17 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* TOP BAR: Clean Language Switcher & Utility */}
       <div className="relative z-20 border-b border-white/10 px-4 sm:px-8 py-1.5 flex items-center justify-between text-xs bg-black/10 backdrop-blur-xs">
         <div className="flex items-center gap-2 text-stone-200">
+          <img src="/sarthi-ai-logo.png" alt="SARTHI AI" className="w-4 h-4 object-contain" />
           <span className="text-amber-400 font-extrabold tracking-wide flex items-center gap-1.5">
-            <span>🌿</span>
-            <span>SARTHI</span>
+            <span>SARTHI AI</span>
           </span>
           <span className="text-white/40 hidden sm:inline">•</span>
           <span className="text-[11px] text-stone-300 font-medium hidden sm:inline">
-            Intelligent Travel Companion for Jharkhand
+            Pan-India Intelligent Sustainable & Cultural Tourism Platform
           </span>
         </div>
 
-        {/* Native Tribal Language Pills matching screenshot */}
+        {/* Native Language Pills */}
         <div className="flex items-center gap-2 sm:gap-4 text-xs font-semibold">
           <div className="flex items-center gap-1 text-stone-300">
             <Globe className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -137,39 +138,35 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           
-          {/* Logo with Hiker Figure matching screenshot */}
+          {/* Logo with sarthi-ai-logo.png */}
           <div 
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3 cursor-pointer group shrink-0"
           >
-            {/* Custom SVG Hiker Figure in Warm Amber / Gold */}
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#E5A93C] text-[#243E1B] flex items-center justify-center font-bold shadow-md shadow-amber-950/40 group-hover:scale-105 transition-transform duration-300">
-              <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-current fill-none stroke-[2.2] stroke-linecap-round stroke-linejoin-round">
-                <circle cx="12" cy="4" r="2" />
-                <path d="M12 6v5l-3 4" />
-                <path d="M12 11l4 2-1 5" />
-                <path d="M10 7H8v4l2 1" />
-                <path d="M17 10l-2 9" />
-                <path d="M17 19l2 2" />
-              </svg>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white/10 p-1 flex items-center justify-center shadow-md shadow-amber-950/40 group-hover:scale-105 transition-transform duration-300 border border-white/20 overflow-hidden shrink-0">
+              <img 
+                src="/sarthi-ai-logo.png" 
+                alt="SARTHI AI Logo" 
+                className="w-full h-full object-contain"
+              />
             </div>
 
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl sm:text-2xl font-bold tracking-tight font-serif text-white group-hover:text-amber-300 transition-colors">
-                  Explore Jharkhand
+                  SARTHI AI
                 </span>
                 <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400 text-stone-950">
-                  SARTHI
+                  INDIA
                 </span>
               </div>
               <p className="text-[11px] text-stone-300 font-medium tracking-wide hidden sm:block">
-                The Land of Forests, Waterfalls and Wonders
+                Sustainable & Cultural Tourism Platform
               </p>
             </div>
           </div>
 
-          {/* Desktop Navigation Links (Properly Grouped) */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1.5">
             {primaryNavItems.map((item) => {
               const Icon = item.icon;

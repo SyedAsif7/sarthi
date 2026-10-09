@@ -1,18 +1,18 @@
 export const ADMIN_STATS = {
-  totalTourists: '1,428,520',
-  totalTouristsGrowth: '+24.8% YoY',
-  popularDestination: 'Dassam & Netarhat',
-  avgTripBudget: '₹9,450',
-  avgTripBudgetChange: '+12% per visitor',
-  popularCategory: 'Waterfalls & Eco-Tourism',
-  popularCategoryShare: '36.4%',
-  touristSatisfaction: '4.82 / 5.0',
-  satisfactionTotalReviews: '48,290 verified reviews',
-  localProviders: '842',
-  localProvidersActive: '620 Guides & Homestays',
-  marketplaceRevenue: '₹48,65,400',
-  directArtisanBenefit: '91.4% directly to tribal communities',
-  ecoConservationScore: '94 / 100',
+  totalTourists: '3,842,500',
+  totalTouristsGrowth: '+32.4% YoY',
+  popularDestination: 'Spiti, Kerala & Netarhat',
+  avgTripBudget: '₹14,200',
+  avgTripBudgetChange: '+18% per traveler',
+  popularCategory: 'Eco-Trails & Living Heritage',
+  popularCategoryShare: '38.4%',
+  touristSatisfaction: '4.88 / 5.0',
+  satisfactionTotalReviews: '94,200 verified reviews',
+  localProviders: '1,280',
+  localProvidersActive: '940 Guides & Homestays',
+  marketplaceRevenue: '₹1,24,50,000',
+  directArtisanBenefit: '92.6% directly to local hosts & artisans across India',
+  ecoConservationScore: '96 / 100',
 };
 
 export const MONTHLY_FOOTFALL = [
@@ -22,23 +22,23 @@ export const MONTHLY_FOOTFALL = [
   { month: 'Apr', domestic: 78000, international: 1800, revenue: 8.4 },
   { month: 'May', domestic: 65000, international: 1400, revenue: 7.1 },
   { month: 'Jun', domestic: 82000, international: 1900, revenue: 9.3 },
-  { month: 'Jul', domestic: 165000, international: 3100, revenue: 18.2 }, // Shravani Mela peak
-  { month: 'Aug', domestic: 178000, international: 3600, revenue: 19.5 }, // Shravani Mela peak
+  { month: 'Jul', domestic: 165000, international: 3100, revenue: 18.2 },
+  { month: 'Aug', domestic: 178000, international: 3600, revenue: 19.5 },
   { month: 'Sep', domestic: 105000, international: 2800, revenue: 11.4 },
-  { month: 'Oct', domestic: 145000, international: 4500, revenue: 16.0 }, // Durga Puja & Sohrai
+  { month: 'Oct', domestic: 145000, international: 4500, revenue: 16.0 },
   { month: 'Nov', domestic: 162000, international: 5200, revenue: 18.1 },
-  { month: 'Dec', domestic: 198000, international: 6800, revenue: 22.4 }, // Winter peak & picnics
+  { month: 'Dec', domestic: 198000, international: 6800, revenue: 22.4 },
 ];
 
 export const DESTINATION_POPULARITY = [
-  { name: 'Netarhat', visitors: 285000, rating: 4.9, fill: '#15803d' },
-  { name: 'Dassam Falls', visitors: 242000, rating: 4.8, fill: '#0d9488' },
-  { name: 'Deoghar Dham', visitors: 320000, rating: 4.9, fill: '#d97706' },
-  { name: 'Hundru Falls', visitors: 195000, rating: 4.7, fill: '#ea580c' },
-  { name: 'Patratu Valley', visitors: 210000, rating: 4.8, fill: '#2563eb' },
-  { name: 'Betla National Park', visitors: 115000, rating: 4.8, fill: '#059669' },
-  { name: 'Jonha Falls', visitors: 98000, rating: 4.6, fill: '#7c3aed' },
-  { name: 'Parasnath Hill', visitors: 135000, rating: 4.9, fill: '#db2777' },
+  { name: 'Spiti Valley (HP)', visitors: 345000, rating: 4.9, fill: '#0284c7' },
+  { name: 'Munroe Island (KL)', visitors: 310000, rating: 4.9, fill: '#059669' },
+  { name: 'Netarhat (JH)', visitors: 285000, rating: 4.9, fill: '#15803d' },
+  { name: 'Khuri Dunes (RJ)', visitors: 260000, rating: 4.8, fill: '#d97706' },
+  { name: 'Mawlynnong (ML)', visitors: 220000, rating: 4.9, fill: '#16a34a' },
+  { name: 'Dassam Falls (JH)', visitors: 242000, rating: 4.8, fill: '#0d9488' },
+  { name: 'Hampi Ruins (KA)', visitors: 290000, rating: 4.9, fill: '#ea580c' },
+  { name: 'Majuli Island (AS)', visitors: 175000, rating: 4.8, fill: '#7c3aed' },
 ];
 
 export const TOURIST_INTEREST_BREAKDOWN = [

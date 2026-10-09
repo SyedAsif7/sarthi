@@ -41,21 +41,21 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   const previousTrips = [
     {
       id: 'prev-1',
-      title: 'Netarhat & Betla Wildlife Expedition',
+      title: 'Spiti Trans-Himalayan Eco Expedition',
       date: 'January 2026',
-      days: 3,
-      spend: '₹8,650',
+      days: 4,
+      spend: '₹14,650',
       rating: 5,
-      highlights: 'Magnolia sunset, Koel dawn view, spotted wild elephant herd in Betla'
+      highlights: 'Langza fossil marine trail, Key Gompa dawn chant, 100% solar heated homestay in Kaza'
     },
     {
       id: 'prev-2',
-      title: 'Deoghar Shravani Pilgrimage & Trikut Ropeway',
+      title: 'Kerala Backwaters & Silent Mangrove Trail',
       date: 'August 2025',
-      days: 2,
-      spend: '₹4,800',
+      days: 3,
+      spend: '₹9,800',
       rating: 5,
-      highlights: 'Baba Baidyanath Abhishek, Trikut Parvat ropeway, authentic Deoghar Peda'
+      highlights: 'Munroe Island silent canoe punting, coir artisan workshop, organic red-rice puttu'
     }
   ];
 
@@ -83,7 +83,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
             <p className="text-xs text-slate-500">aarav.sharma@example.com • +91 98765 43210</p>
             <p className="text-xs text-forest-800 font-medium pt-0.5">
-              Member since Jan 2026 • 2 Trips Completed in Jharkhand
+              Member since Jan 2026 • 2 Pan-India Sustainable Expeditions Completed
             </p>
           </div>
         </div>

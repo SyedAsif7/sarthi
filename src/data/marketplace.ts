@@ -268,7 +268,7 @@ export const MARKETPLACE_ITEMS: MarketplaceItem[] = [
     image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=80',
     location: 'Khunti Sacred Sarna Forest',
     verified: true,
-    badge: 'SIH Special Experience ✓',
+    badge: 'Verified Heritage Experience ✓',
     description: 'Learn the sacred philosophy of the Sarna religion, where nature is supreme deity. Walk with village Pahan (priest) through pristine untouched virgin Sal forest.',
     details: {
       duration: '3 Hours (Morning 07:00 AM)',
@@ -314,6 +314,174 @@ export const MARKETPLACE_ITEMS: MarketplaceItem[] = [
       duration: '3.5 Hours (Lunch included)',
       groupSize: 'Max 10 people',
       amenities: ['Full 5-course Jharkhand Thali', 'Printed recipe booklet with nutrition tips']
+    }
+  },
+
+  // PAN-INDIA NATIONWIDE LISTINGS
+  {
+    id: 'guide-tenzin-norbu',
+    title: 'Tenzin Norbu',
+    subtitle: 'High-Altitude Eco & Monastic Guide — Spiti Valley',
+    category: 'guide',
+    rating: 4.9,
+    reviewsCount: 184,
+    price: 1200,
+    priceUnit: '/day',
+    image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80',
+    location: 'Kaza, Kibber & Pin Valley, Himachal Pradesh',
+    verified: true,
+    badge: 'IMF Mountain Certified ✓',
+    description: 'Native Spitian guide with 10+ years leading trans-Himalayan treks, snow leopard conservation corridors, and thousand-year-old Gompas.',
+    details: {
+      languages: ['Bhoti / Spitian', 'Hindi', 'English'],
+      experienceYears: 10,
+      speciality: 'High-Altitude Acclimatization, Monastic Frescoes & Fossil Trails',
+      duration: 'Full Day'
+    },
+    contactPhone: '+91 94180 XXXXX'
+  },
+  {
+    id: 'guide-sreejith-k',
+    title: 'Sreejith K.',
+    subtitle: 'Backwater Naturalist & Canoe Guide — Munroe Island',
+    category: 'guide',
+    rating: 4.9,
+    reviewsCount: 210,
+    price: 900,
+    priceUnit: '/day',
+    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80',
+    location: 'Munroe Island & Ashtamudi Lake, Kerala',
+    verified: true,
+    badge: 'Kerala Tourism Approved ✓',
+    description: 'Expert canoeist and ornithologist guiding travelers silently through narrow mangrove waterways, tidal lagoons, and migratory bird habitats.',
+    details: {
+      languages: ['Malayalam', 'English', 'Tamil'],
+      experienceYears: 8,
+      speciality: 'Mangrove Ecology, Silent Canoe Punting & Migratory Birds',
+      duration: 'Morning / Sunset Shifts'
+    },
+    contactPhone: '+91 94470 XXXXX'
+  },
+  {
+    id: 'guide-bhanwar-khan',
+    title: 'Bhanwar Khan',
+    subtitle: 'Thar Desert Camel Tracker & Folk Bard — Jaisalmer',
+    category: 'guide',
+    rating: 4.8,
+    reviewsCount: 156,
+    price: 850,
+    priceUnit: '/day',
+    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
+    location: 'Khuri Sand Dunes, Jaisalmer, Rajasthan',
+    verified: true,
+    badge: 'Heritage Folk Custodian ✓',
+    description: 'Third-generation camel caravan tracker and Manganiyar musician guiding offbeat camel expeditions across pristine, non-commercial desert ridges.',
+    details: {
+      languages: ['Marwari', 'Hindi', 'English'],
+      experienceYears: 12,
+      speciality: 'Desert Navigation, Stargazing Constellations & Folk Ballads',
+      duration: 'Full Day / Overnight'
+    },
+    contactPhone: '+91 94141 XXXXX'
+  },
+  {
+    id: 'homestay-spiti-solar',
+    title: 'Spiti Solar Hearth Homestay',
+    subtitle: 'Zero-Waste Community Stay — Kaza',
+    category: 'homestay',
+    rating: 4.9,
+    reviewsCount: 128,
+    price: 1800,
+    priceUnit: '/night',
+    image: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=600&q=80',
+    location: 'Near Ki Gompa, Spiti, Himachal Pradesh',
+    verified: true,
+    badge: '100% Solar Heated ✓',
+    description: 'Traditional passive-solar mud and timber home overlooking snow-crested Himalayan peaks. Serving organic roasted barley tsampa and sea-buckthorn tea.',
+    details: {
+      amenities: ['Passive Solar Heating', 'Dry Compost Toilet System', 'Organic Farm Meals', 'Stargazing Rooftop'],
+      speciality: 'Zero single-use plastic zone with filtered mountain spring water'
+    },
+    contactPhone: '+91 94182 XXXXX'
+  },
+  {
+    id: 'homestay-munroe-coir',
+    title: 'Munroe Backwaters Coir Eco-Lodge',
+    subtitle: 'Island Farmstead by Ashtamudi Lake',
+    category: 'homestay',
+    rating: 4.8,
+    reviewsCount: 144,
+    price: 2200,
+    priceUnit: '/night',
+    image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=600&q=80',
+    location: 'Munroe Island, Kollam, Kerala',
+    verified: true,
+    badge: 'Responsible Tourism Certified ✓',
+    description: 'Stay in a century-old heritage courtyard home nestled under coconut groves. Complimentary silent wooden canoe punting included every morning.',
+    details: {
+      amenities: ['Canoe Punting Included', 'Traditional Clay Oven Kitchen', 'Attached Bath', 'Ayurvedic Herb Garden'],
+      speciality: 'Home-steamed organic red rice puttu and freshly harvested banana chips'
+    },
+    contactPhone: '+91 98471 XXXXX'
+  },
+  {
+    id: 'craft-rogan-art',
+    title: 'Authentic Rogan Painted Silk Tapestry',
+    subtitle: 'Castor Oil Mineral Art — Kutch',
+    category: 'handicraft',
+    rating: 5.0,
+    reviewsCount: 92,
+    price: 3200,
+    priceUnit: 'each',
+    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80',
+    location: 'Nirona Craft Village, Kutch, Gujarat',
+    verified: true,
+    badge: 'Padma Shri Artisan Guild ✓',
+    description: '300-year-old art form where boiled castor oil paste is drawn with a brass stylus directly onto wild Tussar silk into intricate floral mandalas.',
+    details: {
+      artisanName: 'Khatri Family Collective (National Awardees)',
+      material: 'Wild Tussar Silk with Castor Oil and Natural Earth Dyes',
+      amenities: ['Framed Presentation', 'Artisan Certificate of Authenticity']
+    }
+  },
+  {
+    id: 'craft-pattachitra-scroll',
+    title: 'Odisha Pattachitra Palm Leaf Etched Scroll',
+    subtitle: 'Ancient Etching Heritage — Raghurajpur',
+    category: 'handicraft',
+    rating: 4.9,
+    reviewsCount: 88,
+    price: 1950,
+    priceUnit: 'each',
+    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=600&q=80',
+    location: 'Raghurajpur Heritage Craft Village, Puri, Odisha',
+    verified: true,
+    badge: 'GI Tagged Heritage ✓',
+    description: 'Hand-inscribed on dried palm leaves (Tala Pattachitra) using an iron stylus and natural lampblack ink depicting mythological and forest folklore.',
+    details: {
+      artisanName: 'Mahapatra Master Chitrakar Guild',
+      material: 'Seasoned Palm Fronds, Tamarind Seed Gum & Lampblack',
+      amenities: ['Folding Scroll Format', 'GI Tag Verification Stamp']
+    }
+  },
+  {
+    id: 'exp-spiti-stargazing',
+    title: 'Trans-Himalayan Stargazing & Marine Fossil Trail',
+    subtitle: '14,000 ft High Altitude Geo-Immersion — Langza',
+    category: 'experience',
+    rating: 4.9,
+    reviewsCount: 76,
+    price: 750,
+    priceUnit: '/person',
+    image: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=600&q=80',
+    location: 'Langza Village, Spiti Valley, Himachal Pradesh',
+    verified: true,
+    badge: 'Dark Sky Certified Guide ✓',
+    description: 'Walk across prehistoric seabed terraces to locate 200-million-year-old ammonite fossils, followed by celestial observation of the Milky Way core.',
+    details: {
+      duration: '3.5 Hours (Late Evening)',
+      groupSize: 'Max 8 people',
+      amenities: ['Telescope Observation', 'Warm Herbal Tea', 'Fossil Identification Guide']
     }
   }
 ];

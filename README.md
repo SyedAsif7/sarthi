@@ -1,21 +1,20 @@
-# SARTHI — Your Intelligent Travel Companion for Jharkhand 🌿
-**Smart India Hackathon (SIH) 2026 Prototype**
+# SARTHI AI — Pan-India Intelligent Sustainable & Cultural Tourism Platform 🌿
 
-> **Problem Statement ID:** 26204  
-> **Theme:** Travel & Tourism  
-> **Category:** Software  
-> **Developed by:** Team Vertex (SSIEMS)
+> **Focus:** Sustainable, Cultural, and Indigenous Tourism  
+> **Coverage:** 28 Indian States & 8 Union Territories  
+> **Key Innovation:** Explainable SARTHI Impact Score (0–100) & Low-Carbon AI Itineraries  
 
 ---
 
 ## 🎯 Executive Summary & Value Proposition
 
-Tourists visiting Jharkhand historically had to navigate disjointed platforms for destination discovery, route mapping, local homestays, verified forest guides, and tribal cultural activities. At the same time, indigenous artisans, guides, and homestay hosts lacked digital discoverability.
+Travelers exploring India often struggle with fragmented platforms for destination discovery, route planning, certified village homestays, and authentic indigenous artisans. At the same time, rural communities, forest guides, and GI craftspeople face barriers to digital discoverability.
 
-**SARTHI** resolves this with an integrated, AI-driven tourism ecosystem:
-$$\text{Tourism Data} + \text{User Preferences} + \text{AI Personalization} + \text{Interactive Maps} + \text{Local Communities} = \text{Personalized Tourism Ecosystem}$$
+**SARTHI AI** resolves this with an integrated, intelligent, and regenerative tourism platform:
 
-*From "I want to visit Jharkhand" to a complete personalized journey in one platform.*
+$$\text{28 States Data} + \text{Low-Carbon Corridors} + \text{Verified Homestays} + \text{SARTHI Impact Score} = \text{Regenerative Indian Tourism}$$
+
+*From "I want to explore India consciously" to a complete personalized journey with verified community impact.*
 
 ---
 
@@ -25,22 +24,21 @@ The application is running locally on the development server:
 - **Local URL:** [http://localhost:5173/](http://localhost:5173/)
 - **Admin / Govt Portal:** [http://localhost:5173/#/admin](http://localhost:5173/#/admin)
 
-### ⚡ 2–3 Minute SIH Presentation Flow
+### ⚡ Feature Walkthrough Flow
 
-Click the **"Demo Walkthrough"** button in the header or follow this exact presentation script:
-1. **Home Page:** Show the hero section ("Discover Jharkhand Like Never Before"), quick metrics (14+ waterfalls, 32 tribes, 840+ hosts), and featured destinations.
-2. **AI Trip Planner:** Click **"Plan My Trip"** or **"Auto-Run Preset"**.
-   - Input: Budget `₹10,000`, Days: `3`, Travellers: `2`, Interests: `Nature + Culture`.
-   - Click **"✨ Generate My AI Trip"**.
-   - Observe the multi-stage loading animation (*"Sarthi is creating your perfect journey..."*).
-3. **Itinerary & Budget Breakdown:**
-   - Total Budget: `₹10,000` | Estimated Spend: `₹9,200` | Remaining: `₹800`.
-   - Inspect Day 1 (Ranchi & Waterfalls), Day 2 (Netarhat Pine Mist), Day 3 (Patratu Valley).
-   - Itemized daily spend: Food, Transport, Stay, Activities.
-4. **Interactive Route Map:** Click **"View Route"** to open Leaflet OpenStreetMap with polyline route nodes, distance, and travel time.
-5. **Sarthi AI Assistant:** Ask *"Which waterfalls should I visit?"* or *"Plan a 3-day trip under ₹10,000"*.
-6. **Local Marketplace:** Showcase verified guides (*Amit Kumar, ₹800/day*), homestays (*Netarhat Eco Homestay*), and GI-tagged *Dhokra brass* & *Sohrai paintings*.
-7. **Government Analytics Dashboard (`/admin`):** Conclude on the administrative dashboard with real-time Recharts visualizations showing tourist footfall, economic payouts directly to tribal communities, and eco-conservation metrics.
+Click the **"Demo Walkthrough"** button in the header or explore the platform:
+1. **Home Page:** Split hero showcasing living heritage, national flagship spots (Spiti, Munroe Island, Mawlynnong, Khuri, Netarhat), and the SARTHI Impact Engine.
+2. **Interactive Map:** Nationwide Leaflet map with State/UT filter, dynamic bounds fitting, and green impact markers.
+3. **AI Trip Planner:**
+   - Select destination State/UT, starting gateway, budget, and transportation mode.
+   - Synthesizes day-by-day routes, verified village homestays, and calculates the **Explainable SARTHI Impact Score**.
+   - 1-Click WhatsApp sharing and printable PDF / TXT exports.
+4. **Destination Directory & Audio Guide:**
+   - Explore 36 authenticated destinations with multi-criteria filters (State, Zone, Impact Tier, Budget).
+   - Modal with crowd status, live climate, and dual-language (English / Hindi) TTS Audio Tour Guides.
+5. **SARTHI AI Assistant:** Dual-engine intelligent companion (Gemini API + smart local fallback) answering queries on Spiti, Kerala Responsible Tourism, Meghalaya root bridges, Dhokra craft, and sustainability scores.
+6. **Local Marketplace:** Direct 0% commission marketplace connecting travelers to certified local guides, organic homestays, and GI handicrafts.
+7. **Government Analytics Dashboard (`/admin`):** Statewide and nationwide administrative dashboard with real-time Recharts visualizations tracking tourist footfall, economic payouts directly to tribal communities, and eco-conservation metrics.
 
 ---
 
@@ -49,12 +47,13 @@ Click the **"Demo Walkthrough"** button in the header or follow this exact prese
 - **Frontend:** React 18, TypeScript, Tailwind CSS, Lucide React icons
 - **Maps:** Leaflet & OpenStreetMap with custom SVG markers and dynamic polyline route tracking
 - **Analytics:** Recharts data visualizations (Area, Bar, Donut charts)
+- **Sustainability Engine:** Explainable SARTHI Impact Score evaluating Carbon Efficiency (30), Community Economic Retention (35), and Conservation Sensitivity (35)
 - **AI Engine:**
   - **Hybrid Dual-Engine Architecture:**
     - Checks for `VITE_GEMINI_API_KEY` in environment variables.
     - If configured, routes queries through Google Gemini API.
-    - If offline/unconfigured, seamlessly utilizes Sarthi’s local intelligent recommendation engine covering destinations, tribal foods, festivals, and emergency rules.
-- **Design Philosophy:** Inspired by Jharkhand’s lush Sal forests (`#14532d`), Sohrai earth pigments (`#d97706`), clear reservoir turquoise (`#0d9488`), and cream backgrounds (`#faf8f4`).
+    - If offline/unconfigured, seamlessly utilizes SARTHI’s local intelligent recommendation engine covering nationwide destinations, tribal foods, festivals, and emergency rules.
+- **Design Philosophy:** Organic forest greens (`#2D5224`), warm amber/gold (`#E5A93C`), terracotta (`#C85A32`), and clean voyage map tiles.
 
 ---
 
@@ -64,34 +63,35 @@ Click the **"Demo Walkthrough"** button in the header or follow this exact prese
 Sarti/
 ├── src/
 │   ├── components/
-│   │   ├── Navbar.tsx             # Responsive brand navbar with SIH badge
-│   │   ├── Footer.tsx             # SIH credentials & team credits
-│   │   ├── InteractiveMap.tsx     # Leaflet map with destination popups & route trail
-│   │   ├── DestinationModal.tsx   # Detailed modal with timings, food, safety
-│   │   ├── MarketplaceModal.tsx   # Verified guide & homestay demo booking
-│   │   └── QuickDemoModal.tsx     # 1-Click SIH jury presentation guide
+│   │   ├── Navbar.tsx             # Responsive brand navbar with state & language pills
+│   │   ├── Footer.tsx             # Sustainable tourism credentials & links
+│   │   ├── InteractiveMap.tsx     # Leaflet map with pan-India center & state filter
+│   │   ├── DestinationModal.tsx   # Detailed modal with SARTHI Impact Score card & audio guide
+│   │   ├── MarketplaceModal.tsx   # Verified guide & homestay direct booking
+│   │   └── QuickDemoModal.tsx     # 1-Click platform walkthrough guide
 │   ├── pages/
-│   │   ├── HomePage.tsx           # Hero, featured destinations, Heart of Jharkhand
-│   │   ├── TripPlannerPage.tsx    # AI trip planner form & dynamic itinerary
-│   │   ├── ChatAssistantPage.tsx  # ChatGPT-style Sarthi AI tourism assistant
-│   │   ├── ExplorePage.tsx        # Searchable destination directory with multi-filters
+│   │   ├── HomePage.tsx           # Hero, pan-India showcase, living cultural crafts
+│   │   ├── TripPlannerPage.tsx    # State-aware AI trip planner form & dynamic itinerary
+│   │   ├── ChatAssistantPage.tsx  # SARTHI AI tourism assistant
+│   │   ├── ExplorePage.tsx        # Searchable destination directory with state & tier filters
 │   │   ├── MarketplacePage.tsx    # Verified guides, homestays, handicrafts
-│   │   ├── CulturalCalendarPage.tsx# Festivals (Sarhul, Karma, Tusu, Sohrai, Shravani)
+│   │   ├── CulturalCalendarPage.tsx# Cultural calendar dataset
 │   │   ├── SafetyPage.tsx         # Helplines (112, 108, 1363), hospitals, forest rules
 │   │   ├── ProfilePage.tsx        # Tourist profile, saved trips, wishlist
 │   │   └── AdminDashboardPage.tsx # Govt analytics (/admin) with Recharts
 │   ├── data/
-│   │   ├── destinations.ts        # Seeded Jharkhand destination dataset
+│   │   ├── destinations.ts        # 36 authenticated Indian destinations across 15+ States/UTs
 │   │   ├── marketplace.ts         # Verified guides, homestays, handicrafts
 │   │   ├── festivals.ts           # Cultural calendar dataset
 │   │   ├── safetyData.ts          # Helplines, hospitals, trail protocols
-│   │   └── adminAnalytics.ts      # SIH administrative sample data
+│   │   └── adminAnalytics.ts      # Administrative sample metrics
 │   ├── services/
-│   │   ├── itineraryEngine.ts     # Local heuristic itinerary generator
+│   │   ├── itineraryEngine.ts     # Dynamic state routing & budget engine
 │   │   └── chatService.ts         # Dual-mode AI assistant (Gemini + Local)
 │   ├── types/
-│   │   └── index.ts               # Core TypeScript definitions
+│   │   └── index.ts               # Core TypeScript definitions (SarthiImpactScore, Destination)
 │   ├── utils/
+│   │   ├── impactScore.ts         # Explainable 3-pillar impact calculation
 │   │   └── toast.ts               # Confetti celebration & formatting
 │   ├── App.tsx                    # Master state coordinator & tab router
 │   ├── index.css                  # Tailwind styles & theme variables
@@ -100,10 +100,3 @@ Sarti/
 ├── tailwind.config.js             # Forest, gold, turquoise, coral palette
 └── package.json                   # Dependencies
 ```
-
----
-
-## 👥 Team Vertex — SSIEMS
-- **Problem Statement ID:** 26204
-- **Theme:** Travel & Tourism
-- **SIH 2026**

@@ -5,138 +5,154 @@ export const SAFETY_CONTACTS: SafetyContact[] = [
     title: 'National Emergency Response System',
     number: '112',
     category: 'Emergency',
-    description: 'Unified 24x7 all-in-one emergency number for Police, Fire, and Medical assistance.',
+    description: 'Unified 24x7 all-in-one national emergency number for Police, Fire, and Medical assistance.',
     iconName: 'ShieldAlert'
   },
   {
-    title: 'Jharkhand Tourist Police Helpline',
-    number: '1363 / +91 651 2400493',
+    title: 'National Tourist Helpline (Incredible India)',
+    number: '1363 / 1800-111-363',
     category: 'Helpline',
-    description: 'Dedicated tourism facilitation, route guidance, and dispute resolution for visitors.',
+    description: 'Ministry of Tourism 24x7 multi-lingual tourist assistance, travel guidance, and dispute resolution.',
     iconName: 'PhoneCall'
   },
   {
-    title: 'Medical Ambulance Support',
+    title: 'Medical Ambulance Emergency Support',
     number: '108',
     category: 'Medical',
-    description: 'Free statewide government emergency patient transport ambulance service.',
+    description: 'Toll-free nationwide government emergency patient transport and life-support ambulance service.',
     iconName: 'Ambulance'
   },
   {
-    title: 'Women Safety & Support Helpline',
-    number: '1091 / +91 97714 32100',
+    title: 'National Women Helpline & Support',
+    number: '1091 / 181',
     category: 'Emergency',
-    description: 'Round-the-clock rapid response unit for women travelers and distress support.',
+    description: 'Round-the-clock rapid response unit for women travelers and distress support across India.',
     iconName: 'HeartHandshake'
   },
   {
-    title: 'Jharkhand Forest & Wildlife Rescue',
-    number: '+91 651 2480355',
-    category: 'Forest',
-    description: 'Wildlife distress, sanctuary permissions, and forest ranger control room.',
-    iconName: 'Trees'
+    title: 'Indian Railways Security Helpline (RailMadad)',
+    number: '139',
+    category: 'Helpline',
+    description: '24x7 integrated Indian Railways security, medical emergencies, transit tracking, and onboard assistance.',
+    iconName: 'Train'
   },
   {
-    title: 'State Disaster Management Authority (JSDMA)',
-    number: '1070 / +91 651 2446923',
+    title: 'National Disaster Response Force (NDRF)',
+    number: '1078 / 1070',
     category: 'Emergency',
-    description: 'Flash flood alerts, rockslide advisories, and weather crisis coordination.',
+    description: 'Flash flood alerts, landslide advisories, and national weather crisis search-and-rescue coordination.',
     iconName: 'AlertTriangle'
   }
 ];
 
 export const HOSPITALS: HospitalInfo[] = [
   {
+    name: 'All India Institute of Medical Sciences (AIIMS New Delhi)',
+    city: 'New Delhi',
+    district: 'National Capital Region',
+    phone: '+91 11 26588500',
+    is24x7Emergency: true,
+    address: 'Sri Aurobindo Marg, Ansari Nagar, New Delhi 110029 (Apex Level-1 Trauma Care)'
+  },
+  {
+    name: 'AIIMS Rishikesh (High-Altitude Trauma & Emergency)',
+    city: 'Rishikesh',
+    district: 'Dehradun / Uttarakhand',
+    phone: '+91 135 2462929',
+    is24x7Emergency: true,
+    address: 'Virbhadra Road, Rishikesh, Uttarakhand 249203'
+  },
+  {
+    name: 'Christian Medical College & Hospital (CMC)',
+    city: 'Vellore',
+    district: 'Tamil Nadu',
+    phone: '+91 416 2281000',
+    is24x7Emergency: true,
+    address: 'Ida Scudder Road, Vellore, Tamil Nadu 632004'
+  },
+  {
     name: 'Rajendra Institute of Medical Sciences (RIMS)',
     city: 'Ranchi',
-    district: 'Ranchi',
+    district: 'Ranchi / Jharkhand',
     phone: '+91 651 2541533',
     is24x7Emergency: true,
-    address: 'Bariatu, Ranchi, Jharkhand 834009 (Premier Level 1 Trauma Care)'
+    address: 'Bariatu, Ranchi, Jharkhand 834009 (Premier Level 1 Regional Trauma Care)'
   },
   {
-    name: 'Tata Main Hospital (TMH)',
-    city: 'Jamshedpur',
-    district: 'East Singhbhum',
-    phone: '+91 657 2224555',
+    name: 'Postgraduate Institute of Medical Education & Research (PGIMER)',
+    city: 'Chandigarh',
+    district: 'Chandigarh / Punjab-Haryana',
+    phone: '+91 172 2747585',
     is24x7Emergency: true,
-    address: 'C Road, Northern Town, Bistupur, Jamshedpur 831001'
-  },
-  {
-    name: 'AIIMS Deoghar (Super-Speciality)',
-    city: 'Deoghar',
-    district: 'Deoghar',
-    phone: '+91 6432 298644',
-    is24x7Emergency: true,
-    address: 'NH 114A, Kunda, Jasidih, Deoghar 814142'
-  },
-  {
-    name: 'Sadar Hospital Latehar (Netarhat & Betla Access)',
-    city: 'Latehar',
-    district: 'Latehar',
-    phone: '+91 6565 242202',
-    is24x7Emergency: true,
-    address: 'Main Road, Latehar, Jharkhand 829206'
-  },
-  {
-    name: 'Medica Superspecialty Hospital',
-    city: 'Ranchi',
-    district: 'Ranchi',
-    phone: '+91 651 6606000',
-    is24x7Emergency: true,
-    address: 'Piska More, Ratu Road, Ranchi 834005'
+    address: 'Sector 12, Chandigarh 160012 (Premier Multi-Speciality Emergency)'
   }
 ];
 
 export const FOREST_AND_TRAIL_GUIDELINES = [
   {
-    category: 'Waterfall Safety Rules',
+    category: 'Himalayan High-Altitude Acclimatization & Trails',
     rules: [
-      'Never step beyond protective metal railings or venture into plunge pools; sudden underwater whirlpools exist at Dassam and Hundru.',
-      'Rock surfaces surrounding cascades are coated with invisible slick green algae; wear rubber-lugged trekking shoes.',
-      'During monsoon (July–September), water levels can surge within 10 minutes due to upstream dam releases. Heed siren alarms.',
-      'Consumption of alcohol at water bodies is strictly prohibited by Jharkhand Tourism regulations.'
+      'Ascend gradually beyond 9,000 ft (Spiti, Ladakh, Garhwal); schedule at least 48 hours for physiological acclimatization.',
+      'Stay hydrated with 3–4 liters of water daily; carry Diamox only after medical consultation.',
+      'Leave No Trace: Pack out all non-biodegradable waste. High-altitude ecosystems decompose plastic at near-zero rates.',
+      'Wear layered thermal garments and windcheaters; mountain weather can fluctuate by 15°C within two hours.'
     ]
   },
   {
-    category: 'Betla Sanctuary & Forest Protocol',
+    category: 'Waterfalls, Rivers & Backwater Safety Rules',
     rules: [
-      'Hiring an authorized Forest Department eco-guide is mandatory for all private and gypsy safaris.',
-      'Maintain absolute silence. Do not blow vehicle horns, play loud music, or feed wild animals.',
-      'In the event of elephant herd encounters, maintain a minimum 50-meter distance and never switch off vehicle engines or block escape routes.',
-      'Smoking, lighting campfires, and plastic littering are punishable offenses under the Wildlife Protection Act.'
+      'Never step beyond protective railings or venture into plunge pools with submerged whirlpools (e.g. Dassam, Hundru, Athirappilly).',
+      'Rock surfaces around waterfalls and mangrove jetties carry slick algae coats; use rubber-lugged trekking footwear.',
+      'Life jackets are strictly mandatory on all wooden rowboats, shikaras, and backwater canoe excursions.',
+      'Monsoon currents (July–September) can surge within 10 minutes due to upstream dam gates; heed siren warnings.'
     ]
   },
   {
-    category: 'Ghat Driving & Trekking Advisories',
+    category: 'National Park & Wildlife Safari Protocol',
     rules: [
-      'Ghat sections like Patratu Valley and Netarhat Pass feature sharp blind turns. Keep headlights on in foggy conditions and stay within 30 km/h.',
-      'In dense monsoon jungle hikes (Hirni / Saranda), apply salt, mustard oil, or insect repellent to ankles to prevent leech attachments.',
-      'Always start return journeys from secluded forest viewpoints at least 45 minutes prior to sunset.'
+      'Hiring an authorized Forest Department eco-guide is mandatory across national parks (Kaziranga, Jim Corbett, Betla, Periyar).',
+      'Maintain absolute silence. Honking horns, playing amplified music, or teasing wildlife carries severe penalties under the Wildlife Protection Act.',
+      'Maintain a minimum 50-meter safety distance during wild elephant and tiger sightings; never block animal migration corridors.',
+      'Smoking and lighting open campfires are strictly prohibited inside core and buffer zones.'
+    ]
+  },
+  {
+    category: 'Mountain Ghat Driving & Remote Trail Advisories',
+    rules: [
+      'Ghat sections (Western Ghats, Rohtang, Patratu) feature sharp hairpins; keep low-beam headlights on in fog and maintain speed under 35 km/h.',
+      'During monsoon rainforest hikes (Meghalaya, Western Ghats), apply salt or citronella repellent to prevent leeches.',
+      'Always conclude secluded wilderness walks at least 45 minutes prior to official sunset.'
     ]
   }
 ];
 
 export const DEMO_WEATHER_ALERTS = [
   {
-    region: 'Chotanagpur Plateau (Ranchi, Khunti, Ramgarh)',
+    region: 'Trans-Himalayan Plateau (Spiti & Ladakh)',
+    status: 'Crisp Alpine Clear',
+    tempRange: '6°C – 16°C',
+    alertLevel: 'Green (Optimal)',
+    note: 'Clear starry night skies and high UV index. Polarized sunglasses and sun protection essential.'
+  },
+  {
+    region: 'Western Ghats & Kerala Backwaters (Kollam, Wayanad)',
+    status: 'Pleasant Tropical Breeze',
+    tempRange: '23°C – 31°C',
+    alertLevel: 'Green (Normal)',
+    note: 'Calm waters across Vembanad and Ashtamudi lakes. Perfect for solar canoe and kayaking trails.'
+  },
+  {
+    region: 'Chotanagpur Plateau & Sal Forests (Ranchi, Netarhat)',
     status: 'Pleasant & Favorable',
     tempRange: '18°C – 28°C',
     alertLevel: 'Green (Normal)',
     note: 'Clear morning skies with gentle western breeze. Perfect conditions for outdoor waterfall sightseeing.'
   },
   {
-    region: 'Netarhat & Latehar Highlands',
-    status: 'Crisp Mountain Weather',
-    tempRange: '12°C – 22°C',
+    region: 'Thar Desert Fringe (Jaisalmer & Khuri Dunes)',
+    status: 'Golden Sun & Cool Nights',
+    tempRange: '14°C – 29°C',
     alertLevel: 'Green (Normal)',
-    note: 'Dense dawn fog between 05:00 AM and 07:00 AM at Koel Viewpoint. Light woolens advised for sunrise watchers.'
-  },
-  {
-    region: 'Santhal Parganas (Deoghar & Dumka)',
-    status: 'Mild Sun & Warm Afternoon',
-    tempRange: '20°C – 31°C',
-    alertLevel: 'Green (Normal)',
-    note: 'High pilgrim footfall near Baidyanath Mandir. Hydration recommended during noon hours.'
+    note: 'Moderate daytime warmth tapering to crisp starry nights. Ideal for eco-tent campouts and stargazing.'
   }
 ];

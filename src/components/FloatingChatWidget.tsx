@@ -1,72 +1,128 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { 
   MessageCircle, 
   X, 
   Send, 
   Sparkles, 
-  Compass, 
-  PhoneCall, 
-  HelpCircle, 
-  Calendar, 
-  Bot, 
-  User, 
-  ArrowRight,
   Maximize2,
+  Minimize2,
   RotateCcw,
+  Volume2, 
+  VolumeX, 
+  Mic, 
+  MicOff,
+  Copy,
+  Check,
+  Search,
+  Globe,
+  Square,
+  RefreshCw,
+  Layers,
+  ChevronDown,
   ShieldCheck,
   CheckCircle2,
-  Volume2,
-  VolumeX,
-  Mic,
-  MicOff
+  Trash2,
+  ArrowRight
 } from 'lucide-react';
-import { askSarthiAI } from '../services/chatService';
+import { askSarthiAI, loadChatSession, saveChatSession, clearChatSession } from '../services/chatService';
 import { ChatMessage } from '../types';
+import { INDIAN_LANGUAGES, LanguageConfig, getUILabels, detectIndianLanguage } from '../data/languages';
 
 interface FloatingChatWidgetProps {
   onNavigateTab: (tab: string) => void;
   onOpenTripPlanner: () => void;
 }
 
+interface QuickPrompt {
+  id: string;
+  category: 'itinerary' | 'homestay' | 'culture' | 'impact' | 'safety';
+  label: string;
+  prompt: string;
+  icon: string;
+}
+
+const CHAT_CATEGORIES = [
+  { id: 'all', label: 'All', icon: '✨' },
+  { id: 'itinerary', label: 'Eco Tours', icon: '🗺️' },
+  { id: 'homestay', label: 'Homestays', icon: '🏡' },
+  { id: 'culture', label: 'Crafts', icon: '🎨' },
+  { id: 'impact', label: 'Score', icon: '🌱' },
+  { id: 'safety', label: 'Helpline', icon: '🛡️' },
+];
+
+const PROMPT_SUGGESTIONS: QuickPrompt[] = [
+  { id: 'p1', category: 'itinerary', icon: '🏛️', label: 'Maharashtra Ajanta & Ellora', prompt: 'Tell me about Ajanta and Ellora caves in Maharashtra with electric bus transit' },
+  { id: 'p2', category: 'itinerary', icon: '🏔️', label: 'Spiti 4-Day Eco Circuit', prompt: 'Plan an eco-friendly 4-day itinerary in Spiti Valley with high altitude acclimatization' },
+  { id: 'p3', category: 'itinerary', icon: '🌴', label: 'Kerala Backwater 3-Day', prompt: 'Suggest a low-carbon 3-day itinerary across Kerala backwaters and silent canoe trails' },
+  { id: 'p4', category: 'itinerary', icon: '💰', label: 'Budget Trip Under ₹10,000', prompt: 'Create a 3-day budget travel plan under ₹10,000 using Indian Railways' },
+  { id: 'p5', category: 'homestay', icon: '☀️', label: 'Spiti Solar Hearth Stays', prompt: 'Recommend certified passive-solar homestays in Spiti Valley (Kaza and Kibber)' },
+  { id: 'p6', category: 'homestay', icon: '🛶', label: 'Munroe Backwater Coir Stays', prompt: 'Tell me about community-run eco homestays in Munroe Island, Kerala' },
+  { id: 'p7', category: 'culture', icon: '🖌️', label: 'Kutch Rogan & Mud Murals', prompt: 'Where can I meet master Rogan art and Sohrai mural craftspeople?' },
+  { id: 'p8', category: 'culture', icon: '📜', label: 'Odisha Pattachitra Scrolls', prompt: 'How do I visit Raghurajpur heritage craft village in Odisha for Pattachitra?' },
+  { id: 'p9', category: 'impact', icon: '🌱', label: 'How Impact Score Works', prompt: 'How does the SARTHI Impact Score assess carbon, community, and conservation?' },
+  { id: 'p10', category: 'safety', icon: '📞', label: '1363 Tourist Helpline', prompt: 'How does the 1363 24x7 multi-lingual tourist helpline assist travelers in India?' },
+];
+
 export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
   onNavigateTab,
   onOpenTripPlanner,
 }) => {
-  const [isOpen, setIsOpen] = useState(() => {
-    return typeof window !== 'undefined' && window.innerWidth > 768;
-  });
-  const [selectedLang, setSelectedLang] = useState<'en' | 'hi' | 'sat' | 'ho' | 'mun'>('en');
+  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('auto');
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const [languageSearch, setLanguageSearch] = useState('');
+  
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadChatSession());
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [showPromptsDrawer, setShowPromptsDrawer] = useState(false);
+  const [selectedPromptCategory, setSelectedPromptCategory] = useState<string>('all');
+
+  const abortControllerRef = useRef<AbortController | null>(null);
   const recognitionRef = useRef<any>(null);
-
-  const initialWelcomeText = `Johar! 🙏 I am **Sarthi**, your AI travel companion for Jharkhand.\n\nI can help you create budget itineraries, find secret waterfalls, or connect with verified local tribal guides. What would you like to explore today?`;
-
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'fw-1',
-      sender: 'sarthi',
-      text: initialWelcomeText,
-      timestamp: 'Just now',
-      suggestedActions: [
-        { label: '🗺️ 3-Day Trip under ₹10k', actionType: 'plan' },
-        { label: '🌊 Top Waterfalls', actionType: 'explore', payload: 'waterfalls' },
-        { label: '🏹 Tribal Culture', actionType: 'marketplace', payload: 'culture' }
-      ]
-    }
-  ]);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
+  const currentLangConfig = useMemo(() => {
+    return INDIAN_LANGUAGES.find(l => l.code === selectedLanguage) || INDIAN_LANGUAGES[0];
+  }, [selectedLanguage]);
+
+  const labels = useMemo(() => {
+    return getUILabels(selectedLanguage === 'auto' ? 'en' : selectedLanguage);
+  }, [selectedLanguage]);
+
+  const filteredLanguages = useMemo(() => {
+    if (!languageSearch.trim()) return INDIAN_LANGUAGES;
+    const q = languageSearch.toLowerCase().trim();
+    return INDIAN_LANGUAGES.filter(
+      l => l.name.toLowerCase().includes(q) || 
+           l.nativeName.toLowerCase().includes(q) || 
+           l.region.toLowerCase().includes(q) ||
+           l.code.toLowerCase().includes(q)
+    );
+  }, [languageSearch]);
+
+  const scrollToBottom = () => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isTyping, isOpen]);
+  };
 
-  // Clean up speech recognition & text-to-speech on unmount
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping, isStreaming, isOpen]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      saveChatSession(messages);
+    }
+  }, [messages]);
+
   useEffect(() => {
     return () => {
       if ('speechSynthesis' in window) {
@@ -77,111 +133,89 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
           recognitionRef.current.stop();
         } catch {}
       }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
     };
   }, []);
 
-  const languages = [
-    { id: 'en', label: 'English', flag: '🇬🇧' },
-    { id: 'hi', label: 'हिंदी', flag: '🇮🇳' },
-    { id: 'sat', label: 'संथाली', flag: '🇮🇳' },
-    { id: 'ho', label: 'हो', flag: '🇮🇳' },
-    { id: 'mun', label: 'मुंडारी', flag: '🇮🇳' },
-  ];
-
-  const quickPillCategories = [
-    { id: 'waterfalls', label: '🌊 Best Waterfalls', prompt: 'Best waterfalls near Ranchi?' },
-    { id: 'itinerary', label: '🗺️ Plan 3-Day Trip', prompt: 'Plan a 3-day trip under ₹10,000' },
-    { id: 'culture', label: '🏹 Tribal Culture', prompt: 'Where can I experience tribal culture?' },
-    { id: 'food', label: '🍲 Local Food & Dhuska', prompt: 'What are the traditional local foods in Jharkhand?' },
-    { id: 'homestays', label: '🏡 Eco Homestays', prompt: 'Recommend good homestays in Netarhat and Betla' },
-    { id: 'safety', label: '🛡️ Safety & Helplines', prompt: 'What are the emergency tourist helplines in Jharkhand?' },
-  ];
-
-  const handleLanguageChange = (langId: any) => {
-    setSelectedLang(langId);
-    let greeting = `Johar! How can I help you explore Jharkhand?`;
-    if (langId === 'hi') greeting = `जोहार! 🙏 सार्थी में आपका स्वागत है। झारखंड यात्रा के लिए आप क्या जानना चाहते हैं?`;
-    if (langId === 'sat') greeting = `ᱡᱚᱦᱟᱨ (Johar)! ᱥᱟᱨᱛᱷᱤ ᱨᱮ ᱟᱯᱮᱭᱟᱜ ᱥᱟᱜᱩᱱ ᱫᱟᱨᱟᱢ᱾ ᱪᱮᱫ ᱜᱚᱲᱚ ᱫᱚᱨᱠᱟᱨ?`;
-    if (langId === 'ho') greeting = `ᱡᱚᱦᱟᱨ (Johar)! Welcome to Ho cultural trails. How may I assist your trip?`;
-    if (langId === 'mun') greeting = `जोहार! मुंडारी संस्कृति एवं जलप्रपातों की यात्रा के लिए आपका स्वागत है।`;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: `lang-${Date.now()}`,
-        sender: 'sarthi',
-        text: greeting,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      }
-    ]);
-  };
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+    }
+  }, [inputValue]);
 
   const handleResetChat = () => {
-    setMessages([
-      {
-        id: `reset-${Date.now()}`,
-        sender: 'sarthi',
-        text: initialWelcomeText,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        suggestedActions: [
-          { label: '🗺️ 3-Day Trip under ₹10k', actionType: 'plan' },
-          { label: '🌊 Top Waterfalls', actionType: 'explore', payload: 'waterfalls' }
-        ]
-      }
-    ]);
+    if (confirm('Clear chat history?')) {
+      clearChatSession();
+      setMessages([
+        {
+          id: `welcome-${Date.now()}`,
+          sender: 'sarthi',
+          text: currentLangConfig.greeting,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          suggestedActions: [
+            { label: '✨ Plan Trip', actionType: 'plan' },
+            { label: '🏛️ Maharashtra Heritage', actionType: 'prompt', payload: 'Tell me about Ajanta and Ellora caves in Maharashtra' },
+            { label: '🌴 Kerala Homestays', actionType: 'explore', payload: 'Kerala' }
+          ]
+        }
+      ]);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setSpeakingMessageId(null);
+    }
+  };
+
+  const handleStopGeneration = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsStreaming(false);
+    setIsTyping(false);
   };
 
   const handleToggleVoiceInput = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert('Voice input is not supported in this browser. Please use Chrome, Edge, or Safari.');
+      alert(labels.speechUnavailable);
       return;
     }
 
     if (isListening) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      if (recognitionRef.current) recognitionRef.current.stop();
       setIsListening(false);
       return;
     }
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = selectedLang === 'hi' ? 'hi-IN' : 'en-IN';
+      recognition.lang = currentLangConfig.speechCode || 'en-IN';
       recognition.interimResults = true;
       recognition.continuous = false;
 
-      recognition.onstart = () => {
-        setIsListening(true);
-      };
-
+      recognition.onstart = () => setIsListening(true);
       recognition.onresult = (event: any) => {
         const transcript = Array.from(event.results)
           .map((result: any) => (result as any)[0].transcript)
           .join('');
         setInputValue(transcript);
       };
-
-      recognition.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err) {
-      console.error('Speech recognition error:', err);
+      console.warn('Speech recognition error:', err);
       setIsListening(false);
     }
   };
 
-  const handleSpeakMessage = (msgId: string, text: string) => {
+  const handleSpeakMessage = (msgId: string, text: string, langCode?: string) => {
     if (!('speechSynthesis' in window)) {
-      alert('Text-to-speech audio is not supported in this browser.');
+      alert(labels.ttsUnavailable);
       return;
     }
 
@@ -194,7 +228,10 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
     window.speechSynthesis.cancel();
     const cleanText = text.replace(/[*_#`~\[\]]/g, '');
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = selectedLang === 'hi' ? 'hi-IN' : 'en-IN';
+
+    const targetLang = langCode || (selectedLanguage === 'auto' ? 'en' : selectedLanguage);
+    const langObj = INDIAN_LANGUAGES.find(l => l.code === targetLang);
+    utterance.lang = langObj?.speechCode || 'en-IN';
     utterance.rate = 0.95;
 
     utterance.onend = () => setSpeakingMessageId(null);
@@ -204,44 +241,119 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
     setSpeakingMessageId(msgId);
   };
 
+  const handleCopyMessage = async (msgId: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedMessageId(msgId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (err) {
+      console.warn('Failed to copy message:', err);
+    }
+  };
+
   const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend || inputValue).trim();
-    if (!query || isTyping) return;
+    if (!query || isTyping || isStreaming) return;
+
+    if (showPromptsDrawer) setShowPromptsDrawer(false);
+
+    let effectiveLang = selectedLanguage;
+    if (selectedLanguage === 'auto') {
+      const detected = detectIndianLanguage(query);
+      effectiveLang = detected.code;
+    }
 
     const userMsg: ChatMessage = {
       id: `u-${Date.now()}`,
       sender: 'user',
       text: query,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      languageCode: effectiveLang
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const assistantMsgId = `fw-${Date.now() + 1}`;
+    const initialAssistantMsg: ChatMessage = {
+      id: assistantMsgId,
+      sender: 'sarthi',
+      text: '',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isStreaming: true,
+      languageCode: effectiveLang
+    };
+
+    setMessages((prev) => [...prev, userMsg, initialAssistantMsg]);
     if (!textToSend) setInputValue('');
     setIsTyping(true);
+    setIsStreaming(true);
+
+    abortControllerRef.current = new AbortController();
 
     try {
-      const response = await askSarthiAI(query, messages);
-      setMessages((prev) => [...prev, response]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `err-${Date.now()}`,
-          sender: 'sarthi',
-          text: `Johar! Dassam, Hundru, and Netarhat are our top recommendations right now. Click "Suggest Itinerary" to create a custom budget plan!`,
-          timestamp: 'Just now',
-          suggestedActions: [
-            { label: '✨ Launch Trip Planner', actionType: 'plan' }
-          ]
+      const response = await askSarthiAI(query, messages, {
+        language: effectiveLang,
+        signal: abortControllerRef.current.signal,
+        onChunk: (accumulated) => {
+          setIsTyping(false);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMsgId
+                ? { ...m, text: accumulated, isStreaming: true }
+                : m
+            )
+          );
         }
-      ]);
+      });
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantMsgId
+            ? { ...response, id: assistantMsgId, isStreaming: false }
+            : m
+        )
+      );
+    } catch (err: any) {
+      if (err.name !== 'AbortError') {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantMsgId
+              ? {
+                  ...m,
+                  text: 'Namaste! A connection issue occurred. Please try planning your trip below:',
+                  isStreaming: false,
+                  error: true,
+                  suggestedActions: [
+                    { label: '✨ Launch Trip Planner', actionType: 'plan' }
+                  ]
+                }
+              : m
+          )
+        );
+      }
     } finally {
       setIsTyping(false);
+      setIsStreaming(false);
+      abortControllerRef.current = null;
+    }
+  };
+
+  const handleRetryLast = () => {
+    const lastUserMsg = [...messages].reverse().find(m => m.sender === 'user');
+    if (lastUserMsg) {
+      handleSendMessage(lastUserMsg.text);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
   const handleActionClick = (action: { label: string; actionType: string; payload?: string }) => {
-    if (action.actionType === 'plan') {
+    if (action.actionType === 'prompt' && action.payload) {
+      handleSendMessage(action.payload);
+    } else if (action.actionType === 'plan') {
       onOpenTripPlanner();
       if (window.innerWidth < 768) setIsOpen(false);
     } else if (action.actionType === 'map') {
@@ -256,247 +368,452 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
     }
   };
 
+  const renderFormattedMarkdown = (rawText: string) => {
+    const lines = rawText.split('\n');
+    return lines.map((line, idx) => {
+      if (line.startsWith('### ')) {
+        return (
+          <h4 key={idx} className="font-bold text-xs sm:text-sm text-stone-900 font-serif mt-2 mb-1 flex items-center gap-1.5 border-l-3 border-[#2D5224] pl-2 bg-emerald-50/60 py-0.5 rounded-r">
+            <span>🌿</span>
+            <span>{line.replace('### ', '')}</span>
+          </h4>
+        );
+      }
+      if (line.startsWith('## ')) {
+        return (
+          <h3 key={idx} className="font-extrabold text-xs sm:text-sm text-[#2D5224] font-serif mt-3 mb-1 border-b border-stone-200 pb-0.5">
+            {line.replace('## ', '')}
+          </h3>
+        );
+      }
+      if (line.startsWith('* ') || line.startsWith('- ')) {
+        return (
+          <div key={idx} className="flex items-start gap-1.5 my-0.5 text-xs text-stone-700 leading-relaxed pl-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#2D5224] shrink-0 mt-1.5" />
+            <span>{formatBold(line.substring(2))}</span>
+          </div>
+        );
+      }
+      const numberMatch = line.match(/^(\d+)\.\s+(.*)/);
+      if (numberMatch) {
+        return (
+          <div key={idx} className="flex items-start gap-1.5 my-1 text-xs text-stone-700 leading-relaxed pl-1">
+            <span className="w-4 h-4 rounded-full bg-amber-100 text-[#8F4316] font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+              {numberMatch[1]}
+            </span>
+            <span>{formatBold(numberMatch[2])}</span>
+          </div>
+        );
+      }
+      if (line.startsWith('> ')) {
+        return (
+          <blockquote key={idx} className="border-l-3 border-amber-500 pl-2 my-1 text-xs italic text-stone-700 bg-amber-50/80 py-1 rounded-r">
+            {line.replace('> ', '')}
+          </blockquote>
+        );
+      }
+      if (line.trim() === '') {
+        return <div key={idx} className="h-1" />;
+      }
+      return (
+        <p key={idx} className="text-xs text-stone-800 leading-relaxed">
+          {formatBold(line)}
+        </p>
+      );
+    });
+  };
+
+  const formatBold = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="font-bold text-stone-950">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
+
+  const filteredPrompts = selectedPromptCategory === 'all'
+    ? PROMPT_SUGGESTIONS
+    : PROMPT_SUGGESTIONS.filter((p) => p.category === selectedPromptCategory);
+
   return (
-    <div className="fixed bottom-20 sm:bottom-6 right-3 sm:right-6 z-40 flex flex-col items-end select-none">
-      
-      {/* FLOATING CHAT CARD */}
+    <>
+      {/* 1. FLOATING LAUNCHER BUTTON */}
+      {!isOpen && (
+        <div className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-40 animate-bounceOnce">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="group flex items-center gap-3 bg-gradient-to-r from-[#2D5224] to-[#1e3c17] hover:from-[#23421c] hover:to-[#172f12] text-white p-3.5 sm:px-5 sm:py-3.5 rounded-full shadow-2xl hover:shadow-emerald-900/30 transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-amber-300/40 cursor-pointer"
+            aria-label="Open SARTHI AI Chatbot"
+          >
+            <div className="relative">
+              <div className="w-8 h-8 rounded-full bg-white p-0.5 flex items-center justify-center overflow-hidden border border-amber-300">
+                <img src="/sarthi-ai-logo.png" alt="SARTHI" className="w-full h-full object-contain" />
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#2D5224] animate-pulse" />
+            </div>
+
+            <div className="hidden sm:flex flex-col text-left">
+              <span className="text-xs font-bold font-serif tracking-wide text-white group-hover:text-amber-200 transition-colors">
+                Ask SARTHI AI
+              </span>
+              <span className="text-[10px] text-emerald-100 font-medium line-clamp-1">
+                22 Indian Languages • 0-100 Impact Score
+              </span>
+            </div>
+
+            <Sparkles className="w-4 h-4 text-amber-300 animate-pulse ml-1" />
+          </button>
+        </div>
+      )}
+
+      {/* 2. CHAT PANEL / FULLSCREEN MODAL */}
       {isOpen && (
-        <div className="mb-2 sm:mb-3 w-[calc(100vw-1.5rem)] sm:w-[420px] max-w-[420px] h-[70vh] sm:h-[540px] max-h-[580px] bg-[#FAF8F4] rounded-3xl shadow-2xl border border-stone-200/90 flex flex-col overflow-hidden animate-fadeIn relative">
-          
-          {/* 1. HEADER WITH BOT STATUS & CONTROLS */}
-          <div className="bg-[#2D5224] px-4 py-3 text-white flex items-center justify-between border-b border-white/10 shrink-0">
+        <div
+          className={`fixed z-50 transition-all duration-300 ease-in-out flex flex-col shadow-2xl border border-stone-200/90 overflow-hidden bg-white ${
+            isExpanded
+              ? 'inset-0 sm:inset-4 sm:rounded-3xl'
+              : 'bottom-0 right-0 w-full sm:bottom-6 sm:right-6 sm:w-[420px] h-[92vh] sm:h-[620px] rounded-t-3xl sm:rounded-3xl'
+          }`}
+        >
+          {/* STICKY HEADER */}
+          <div className="bg-[#FAF7F0] p-3.5 border-b border-stone-200/90 flex items-center justify-between shrink-0 relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2D5224] via-amber-400 to-[#C85A32]" />
+
             <div className="flex items-center gap-2.5">
               <div className="relative">
-                <div className="w-8 h-8 rounded-full bg-[#E5A93C] text-[#243E1B] flex items-center justify-center font-bold text-sm shadow-sm">
-                  🌿
+                <div className="w-9 h-9 rounded-xl bg-white p-0.5 flex items-center justify-center border border-amber-300 shadow-2xs overflow-hidden">
+                  <img src="/sarthi-ai-logo.png" alt="SARTHI" className="w-full h-full object-contain" />
                 </div>
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#2D5224]" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white animate-pulse" />
               </div>
+
               <div>
-                <h4 className="font-bold text-sm leading-tight text-white flex items-center gap-1.5 font-serif">
-                  <span>Sarthi AI</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-400 text-stone-950 font-bold uppercase">
-                    SIH 2026
+                <div className="flex items-center gap-1.5">
+                  <h3 className="font-bold text-xs sm:text-sm text-stone-900 font-serif">
+                    SARTHI AI
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 font-extrabold uppercase">
+                    Online
                   </span>
-                </h4>
-                <p className="text-[10px] text-stone-200">
-                  Intelligent Travel Assistant
+                </div>
+                <p className="text-[10px] text-stone-600 truncate max-w-[170px]">
+                  Pan-India Sustainable Travel
                 </p>
               </div>
             </div>
 
-            {/* Window Controls */}
+            {/* Controls */}
             <div className="flex items-center gap-1">
+              {/* Language Selector Button */}
+              <button
+                onClick={() => setIsLanguageModalOpen(true)}
+                className="px-2 py-1 rounded-lg bg-white hover:bg-stone-100 text-stone-800 text-[11px] font-semibold flex items-center gap-1 border border-stone-200 cursor-pointer shadow-2xs"
+                title="Change Language"
+              >
+                <span>{currentLangConfig.flag}</span>
+                <span className="max-w-[60px] truncate">{currentLangConfig.name}</span>
+                <ChevronDown className="w-2.5 h-2.5 text-stone-500" />
+              </button>
+
               <button
                 onClick={handleResetChat}
-                className="p-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/10 transition-colors"
-                title="Reset Conversation"
+                className="p-1.5 rounded-lg hover:bg-stone-200/70 text-stone-600 transition-colors cursor-pointer"
+                title="Clear Chat"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <Trash2 className="w-3.5 h-3.5" />
               </button>
+
               <button
-                onClick={() => {
-                  onNavigateTab('assistant');
-                  if (window.innerWidth < 768) setIsOpen(false);
-                }}
-                className="p-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/10 transition-colors"
-                title="Expand to Full View"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-1.5 rounded-lg hover:bg-stone-200/70 text-stone-600 transition-colors hidden sm:block cursor-pointer"
+                title={isExpanded ? 'Minimize' : 'Maximize'}
               >
-                <Maximize2 className="w-3.5 h-3.5" />
+                {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
               </button>
+
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/10 transition-colors"
-                title="Minimize Chat"
+                className="p-1.5 rounded-lg hover:bg-stone-200/70 text-stone-600 transition-colors cursor-pointer"
+                title="Close"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* 2. NATIVE LANGUAGE SELECTOR STRIP */}
-          <div className="bg-[#EFECE1] px-3 py-1.5 border-b border-[#E0D9C8] flex items-center justify-between text-[11px] shrink-0">
-            <span className="text-stone-500 font-semibold text-[10px] uppercase">Language:</span>
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
-              {languages.map((l) => (
-                <button
-                  key={l.id}
-                  onClick={() => handleLanguageChange(l.id)}
-                  className={`px-2 py-0.5 rounded-full font-medium transition-all ${
-                    selectedLang === l.id
-                      ? 'bg-[#2D5224] text-white font-bold shadow-xs'
-                      : 'text-stone-700 hover:bg-[#E2DBD0]'
-                  }`}
-                >
-                  <span>{l.flag} {l.label}</span>
-                </button>
-              ))}
+          {/* SUGGESTED PROMPTS DRAWER */}
+          <div className="bg-[#FAF7F0]/80 border-b border-stone-200/70 px-3 py-2 shrink-0">
+            <div className="flex items-center justify-between text-[11px]">
+              <button
+                onClick={() => setShowPromptsDrawer(!showPromptsDrawer)}
+                className="text-stone-700 hover:text-[#2D5224] font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <Layers className="w-3.5 h-3.5 text-[#2D5224]" />
+                <span>{labels.curatedTopics}</span>
+                <span>{showPromptsDrawer ? '▲' : '▼'}</span>
+              </button>
+              <span className="text-[10px] text-stone-400">Tap to ask</span>
             </div>
+
+            {showPromptsDrawer && (
+              <div className="mt-2 space-y-2 animate-fadeIn max-h-48 overflow-y-auto pr-1">
+                <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
+                  {CHAT_CATEGORIES.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => setSelectedPromptCategory(c.id)}
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 cursor-pointer ${
+                        selectedPromptCategory === c.id
+                          ? 'bg-[#2D5224] text-white'
+                          : 'bg-white text-stone-700 border border-stone-200'
+                      }`}
+                    >
+                      <span>{c.icon}</span> <span>{c.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 gap-1.5">
+                  {filteredPrompts.slice(0, 4).map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => handleSendMessage(p.prompt)}
+                      className="bg-white hover:bg-emerald-50 p-2 rounded-xl border border-stone-200 text-left text-[11px] font-medium text-stone-800 hover:text-[#2D5224] transition-colors flex items-center justify-between cursor-pointer shadow-2xs"
+                    >
+                      <span className="truncate pr-1">{p.icon} {p.label}</span>
+                      <ArrowRight className="w-3 h-3 shrink-0 text-stone-400" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* 3. CATEGORIZED QUICK PILLS */}
-          <div className="p-2.5 bg-[#FAF7F0] border-b border-[#E8E2D5] shrink-0">
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
-              {quickPillCategories.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => handleSendMessage(c.prompt)}
-                  className="px-2.5 py-1 rounded-full bg-[#C85A32] hover:bg-[#B34D27] text-white text-[10px] font-bold whitespace-nowrap shrink-0 transition-transform active:scale-95 shadow-xs"
-                >
-                  {c.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 4. MESSAGES CONVERSATION SCROLL AREA */}
-          <div className="flex-1 p-3.5 overflow-y-auto space-y-3.5 text-xs bg-[#FAF8F4]">
-            {messages.map((m) => {
-              const isSarthi = m.sender === 'sarthi';
-
-              return (
-                <div
-                  key={m.id}
-                  className={`flex items-start gap-2.5 ${isSarthi ? 'justify-start' : 'justify-end'}`}
-                >
-                  {isSarthi && (
-                    <div className="w-6 h-6 rounded-full bg-[#2D5224] text-amber-300 flex items-center justify-center shrink-0 text-[10px] font-bold shadow-xs mt-0.5">
-                      🌿
+          {/* MESSAGE STREAM */}
+          <div className="flex-1 overflow-y-auto p-3.5 space-y-3 bg-[#FCFBF8]">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} transition-all`}
+              >
+                {msg.sender === 'user' ? (
+                  <div className="max-w-[85%] bg-[#204D35] text-white rounded-2xl rounded-tr-xs p-3 shadow-2xs space-y-0.5">
+                    <p className="text-xs leading-relaxed whitespace-pre-wrap font-medium">
+                      {msg.text}
+                    </p>
+                    <div className="text-[9px] text-emerald-200/70 text-right">
+                      {msg.timestamp}
                     </div>
-                  )}
+                  </div>
+                ) : (
+                  <div className="w-full bg-white rounded-2xl rounded-tl-xs p-3.5 shadow-2xs border border-stone-200/90 space-y-2">
+                    <div className="flex items-center justify-between border-b border-stone-100 pb-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[11px] font-bold text-stone-900 font-serif">SARTHI AI</span>
+                        {msg.source && (
+                          <span className="text-[9px] px-1.5 py-0.2 bg-emerald-50 text-[#204D35] rounded font-mono border border-emerald-200">
+                            {msg.source === 'gemini' ? 'Google Gemini Flash' : 'SARTHI Verified'}
+                          </span>
+                        )}
+                      </div>
 
-                  <div
-                    className={`max-w-[86%] rounded-2xl p-3 leading-relaxed ${
-                      isSarthi
-                        ? 'bg-white text-stone-800 border border-stone-200/90 shadow-soft'
-                        : 'bg-[#2D5224] text-white font-medium rounded-br-none shadow-sm'
-                    }`}
-                  >
-                    <p className="whitespace-pre-line text-xs">{m.text}</p>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleCopyMessage(msg.id, msg.text)}
+                          className="p-1 rounded hover:bg-stone-100 text-stone-400 hover:text-stone-700 cursor-pointer"
+                          title="Copy"
+                        >
+                          {copiedMessageId === msg.id ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                        </button>
+                        <button
+                          onClick={() => handleSpeakMessage(msg.id, msg.text, msg.languageCode)}
+                          className="p-1 rounded hover:bg-stone-100 text-stone-400 hover:text-stone-700 cursor-pointer"
+                          title="Read Aloud"
+                        >
+                          {speakingMessageId === msg.id ? <VolumeX className="w-3 h-3 text-amber-600" /> : <Volume2 className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    </div>
 
-                    {/* Action buttons attached to AI response */}
-                    {m.suggestedActions && m.suggestedActions.length > 0 && (
-                      <div className="pt-2 mt-2 border-t border-stone-100 flex flex-wrap gap-1.5">
-                        {m.suggestedActions.map((act, i) => (
+                    <div className="text-stone-800 text-xs leading-relaxed space-y-1">
+                      {msg.text ? (
+                        renderFormattedMarkdown(msg.text)
+                      ) : (
+                        <div className="flex items-center gap-1 py-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2D5224] animate-bounce [animation-delay:-0.3s]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2D5224] animate-bounce [animation-delay:-0.15s]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2D5224] animate-bounce" />
+                        </div>
+                      )}
+
+                      {msg.isStreaming && (
+                        <span className="inline-block w-1.5 h-3 bg-[#2D5224] ml-1 animate-pulse align-middle" />
+                      )}
+                    </div>
+
+                    {msg.suggestedActions && msg.suggestedActions.length > 0 && !msg.isStreaming && (
+                      <div className="pt-1.5 border-t border-stone-100 flex flex-wrap gap-1.5">
+                        {msg.suggestedActions.map((act, idx) => (
                           <button
-                            key={i}
+                            key={idx}
                             onClick={() => handleActionClick(act)}
-                            className="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-[#2D5224] text-stone-800 hover:text-white font-semibold text-[10px] transition-colors flex items-center gap-1"
+                            className="px-2.5 py-1 rounded-lg bg-[#FAF7F0] hover:bg-emerald-50 text-stone-800 hover:text-[#2D5224] text-[11px] font-semibold border border-stone-200 transition-colors cursor-pointer"
                           >
-                            <span>{act.label}</span>
-                            <ArrowRight className="w-3 h-3" />
+                            {act.label}
                           </button>
                         ))}
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between mt-1.5 pt-1">
-                      {isSarthi && (
-                        <button
-                          type="button"
-                          onClick={() => handleSpeakMessage(m.id, m.text)}
-                          className="text-stone-400 hover:text-[#2D5224] p-0.5 rounded transition-colors flex items-center gap-1 text-[10px]"
-                          title="Listen to this message"
-                        >
-                          {speakingMessageId === m.id ? (
-                            <>
-                              <VolumeX className="w-3 h-3 text-rose-500 animate-pulse" />
-                              <span className="text-rose-600 font-semibold">Stop</span>
-                            </>
-                          ) : (
-                            <>
-                              <Volume2 className="w-3 h-3" />
-                              <span>Listen</span>
-                            </>
-                          )}
-                        </button>
-                      )}
-                      <span className={`text-[9px] ${isSarthi ? 'text-stone-400 ml-auto' : 'text-stone-300'}`}>
-                        {m.timestamp}
-                      </span>
+                    <div className="text-[9px] text-stone-400 text-right">
+                      {msg.timestamp}
                     </div>
                   </div>
-
-                  {!isSarthi && (
-                    <div className="w-6 h-6 rounded-full bg-amber-400 text-stone-900 flex items-center justify-center shrink-0 text-[10px] font-bold mt-0.5">
-                      <User className="w-3 h-3" />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-
-            {isTyping && (
-              <div className="flex items-center gap-2 text-stone-500 text-[11px] p-2 bg-white rounded-xl w-fit shadow-xs border border-stone-200/80">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2D5224] animate-bounce" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2D5224] animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2D5224] animate-bounce [animation-delay:0.4s]" />
-                <span className="ml-1 font-medium text-xs">Sarthi is thinking...</span>
+                )}
               </div>
-            )}
-
+            ))}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* 5. INPUT BAR & CONTROLS */}
-          <div className="p-2.5 bg-white border-t border-stone-200 shrink-0">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendMessage();
-              }}
-              className="flex items-center gap-2 bg-[#F5F2EB] rounded-full px-3.5 py-1.5 border border-[#E0D9C8] focus-within:border-[#2D5224] transition-colors"
-            >
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={isListening ? "Listening... Speak now..." : "Ask Sarthi anything about Jharkhand..."}
-                className="flex-1 bg-transparent text-xs font-medium text-stone-800 placeholder-stone-400 focus:outline-none"
-              />
+          {/* INPUT AREA */}
+          <div className="p-2.5 bg-white border-t border-stone-200/90 shrink-0 space-y-1.5">
+            {isStreaming ? (
+              <div className="flex justify-center">
+                <button
+                  onClick={handleStopGeneration}
+                  className="px-3 py-1 rounded-full bg-stone-900 text-white text-[11px] font-bold flex items-center gap-1.5 shadow-sm hover:bg-stone-800 transition-all cursor-pointer"
+                >
+                  <Square className="w-2.5 h-2.5 fill-current" />
+                  <span>{labels.stop}</span>
+                </button>
+              </div>
+            ) : messages.length > 1 && (
+              <div className="flex justify-end pr-1">
+                <button
+                  onClick={handleRetryLast}
+                  disabled={isTyping}
+                  className="text-[10px] text-stone-400 hover:text-stone-700 flex items-center gap-1 cursor-pointer"
+                >
+                  <RefreshCw className="w-2.5 h-2.5" />
+                  <span>{labels.retry}</span>
+                </button>
+              </div>
+            )}
+
+            <div className="bg-[#FAF7F0] rounded-2xl p-1.5 border border-stone-200 focus-within:border-[#2D5224] focus-within:ring-1 focus-within:ring-emerald-200 transition-all flex items-end gap-1.5">
               <button
-                type="button"
                 onClick={handleToggleVoiceInput}
-                className={`w-7 h-7 rounded-full flex items-center justify-center transition-all shrink-0 active:scale-95 ${
-                  isListening 
-                    ? 'bg-rose-500 text-white animate-pulse shadow-md' 
-                    : 'text-stone-500 hover:text-stone-800 hover:bg-stone-200/60'
+                className={`p-2 rounded-xl transition-all cursor-pointer shrink-0 ${
+                  isListening
+                    ? 'bg-rose-500 text-white animate-pulse'
+                    : 'text-stone-500 hover:bg-white'
                 }`}
-                title={isListening ? "Stop listening" : "Speak to Sarthi (Voice Input)"}
+                title={isListening ? labels.listening : labels.voiceInput}
               >
                 {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
               </button>
-              <button
-                type="submit"
-                disabled={!inputValue.trim() || isTyping}
-                className="w-7 h-7 rounded-full bg-[#2D5224] hover:bg-[#203D19] text-white flex items-center justify-center transition-all disabled:opacity-40 shrink-0 active:scale-95"
-              >
-                <Send className="w-3.5 h-3.5 -ml-0.5" />
-              </button>
-            </form>
-            <p className="text-[9px] text-center text-stone-400 mt-1.5">
-              🌿 Sarthi AI • Offline Smart Engine + Gemini API Ready • SIH 2026
-            </p>
+
+              <textarea
+                ref={textareaRef}
+                rows={1}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={labels.inputPlaceholder}
+                maxLength={2000}
+                className="flex-1 bg-transparent border-0 resize-none text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none py-1.5 px-1 max-h-28 leading-relaxed"
+              />
+
+              {isStreaming ? (
+                <button
+                  onClick={handleStopGeneration}
+                  className="p-2 rounded-xl bg-stone-900 text-white cursor-pointer shrink-0"
+                >
+                  <Square className="w-3.5 h-3.5 fill-current" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleSendMessage()}
+                  disabled={!inputValue.trim() || isTyping}
+                  className="p-2 rounded-xl bg-[#2D5224] text-white hover:bg-[#23421c] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between text-[9px] text-stone-400 px-1">
+              <span>Verified Pan-India planning estimates</span>
+              <span>Enter ↵ to send</span>
+            </div>
           </div>
 
+          {/* SEARCHABLE LANGUAGE SELECTOR MODAL */}
+          {isLanguageModalOpen && (
+            <div className="absolute inset-0 z-50 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-3 animate-fadeIn">
+              <div className="bg-white w-full max-w-sm rounded-2xl shadow-xl border border-stone-200 overflow-hidden flex flex-col max-h-[80%]">
+                <div className="p-3 border-b border-stone-100 flex items-center justify-between bg-[#FAF7F0]">
+                  <div className="flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-[#2D5224]" />
+                    <span className="text-xs font-bold text-stone-900 font-serif">Select Language</span>
+                  </div>
+                  <button
+                    onClick={() => setIsLanguageModalOpen(false)}
+                    className="p-1 rounded-lg hover:bg-stone-200 text-stone-500 cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="p-2 border-b border-stone-100">
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400" />
+                    <input
+                      type="text"
+                      value={languageSearch}
+                      onChange={(e) => setLanguageSearch(e.target.value)}
+                      placeholder={labels.searchLanguage}
+                      className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-stone-200 focus:border-[#2D5224] focus:outline-none"
+                      autoFocus
+                    />
+                  </div>
+                </div>
+
+                <div className="p-2 overflow-y-auto space-y-1 flex-1">
+                  {filteredLanguages.map((lang) => {
+                    const isSelected = selectedLanguage === lang.code;
+                    return (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setSelectedLanguage(lang.code);
+                          setIsLanguageModalOpen(false);
+                        }}
+                        className={`w-full p-2 rounded-xl text-left border text-xs flex items-center justify-between cursor-pointer ${
+                          isSelected
+                            ? 'border-[#2D5224] bg-emerald-50 text-[#2D5224] font-bold'
+                            : 'border-transparent hover:bg-stone-100 text-stone-800'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{lang.flag}</span>
+                          <div>
+                            <div>{lang.name}</div>
+                            <div className="text-[10px] text-stone-500">{lang.nativeName}</div>
+                          </div>
+                        </div>
+                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#2D5224]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
-
-      {/* CIRCULAR GREEN FLOATING TRIGGER BUTTON */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#2D5224] hover:bg-[#203D19] text-white flex items-center justify-center shadow-xl shadow-[#2D5224]/30 transition-all hover:scale-105 active:scale-95 group relative"
-        aria-label="Toggle Sarthi AI Assistant"
-      >
-        <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-[#2D5224]" />
-        
-        {!isOpen && (
-          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#C85A32] border-2 border-white flex items-center justify-center text-[9px] font-bold text-white animate-pulse">
-            1
-          </span>
-        )}
-      </button>
-
-    </div>
+    </>
   );
 };

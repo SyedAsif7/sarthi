@@ -34,7 +34,7 @@ export const SafetyPage: React.FC = () => {
 
         <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl max-w-xl mx-auto text-[11px] text-amber-900 flex items-center gap-2">
           <Info className="w-4 h-4 text-amber-700 shrink-0" />
-          <span>Notice: Helplines and hospital directories are based on official Jharkhand state public listings. Weather alerts represent demo simulated feeds.</span>
+          <span>Notice: Helplines and hospital directories are based on official National Tourism & Emergency public listings (Ministry of Tourism & Ministry of Home Affairs, Govt. of India). Weather alerts represent demo simulated feeds.</span>
         </div>
       </div>
 

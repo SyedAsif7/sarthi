@@ -56,30 +56,30 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
           Grassroots Economic Empowerment
         </span>
         <h1 className="text-3xl sm:text-5xl font-extrabold font-serif text-slate-900 tracking-tight">
-          Experience Local Jharkhand
+          Incredible India Local Marketplace & Artisans
         </h1>
         <p className="text-sm sm:text-base text-slate-600">
-          Connect directly with certified tribal guides, community-managed eco-homestays, and master Dhokra & Sohrai artisans.
+          Direct connection with verified community guides, certified eco-homestays, and GI-tagged indigenous artisans across 28 States and 8 Union Territories.
         </p>
       </div>
 
-      {/* SIH Direct Benefit Model Banner */}
+      {/* Direct Community Benefit Model Banner */}
       <div className="max-w-6xl mx-auto p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-forest-900 via-forest-800 to-forest-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl border border-gold-400/30">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-2xl bg-gold-500/20 border border-gold-400 flex items-center justify-center text-gold-400 shrink-0">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-sm sm:text-base text-gold-300">0% Commission • 100% Direct Benefit to Indigenous Communities</h3>
+            <h3 className="font-bold text-sm sm:text-base text-gold-300">0% Commission • 100% Direct Benefit to Indigenous & Rural Communities</h3>
             <p className="text-xs text-forest-200">
-              SARTHI empowers local hosts with direct digital discovery without extractive intermediary platform cuts.
+              SARTHI empowers local hosts across India with direct digital discovery without extractive intermediary platform cuts.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
           <span className="px-3 py-1 rounded-full bg-forest-800 text-turquoise-300 text-xs font-semibold border border-forest-700">
-            840+ Active Providers
+            1,250+ Active Pan-India Providers
           </span>
         </div>
       </div>

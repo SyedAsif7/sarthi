@@ -180,11 +180,11 @@ export const MarketplaceModal: React.FC<MarketplaceModalProps> = ({
             </div>
           )}
 
-          {/* SIH Direct Livelihood Guarantee */}
+          {/* Direct Community Livelihood Guarantee */}
           <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-3">
             <ShieldCheck className="w-5 h-5 text-emerald-700 shrink-0" />
             <p className="text-xs text-emerald-800">
-              <strong className="font-semibold">SIH Direct Benefit Model:</strong> 100% of the funds go directly to the verified local tribal host with 0% platform intermediary commission.
+              <strong className="font-semibold">Direct Community Benefit Model:</strong> 100% of the funds go directly to the verified local host or artisan collective with 0% platform intermediary commission.
             </p>
           </div>
 
@@ -243,7 +243,7 @@ export const MarketplaceModal: React.FC<MarketplaceModalProps> = ({
               </div>
 
               <p className="text-[11px] text-center text-slate-400">
-                🔒 Safe Prototype Mode: No real payment credentials required for SIH 2026 presentation.
+                🔒 Safe Direct Mode: Certified local community host direct connection.
               </p>
             </div>
           )}
