@@ -144,90 +144,109 @@ export async function handleChatApiRequest(req, res, serverEnv) {
 
     // Server-side environment variables only
     const apiKey = (process.env.GEMINI_API_KEY || serverEnv?.GEMINI_API_KEY || '').trim();
-    const model = (process.env.GEMINI_MODEL || serverEnv?.GEMINI_MODEL || 'gemini-flash-latest').trim();
+    const configuredModel = (process.env.GEMINI_MODEL || serverEnv?.GEMINI_MODEL || 'gemini-flash-lite-latest').trim();
+    const candidateModels = [
+      configuredModel,
+      'gemini-flash-lite-latest',
+      'gemini-3.1-flash-lite',
+      'gemini-3.5-flash-lite',
+      'gemini-flash-latest'
+    ].filter((m, i, arr) => Boolean(m) && arr.indexOf(m) === i);
 
-    const targetLangName = LANGUAGE_NAMES[language] || 'the same language as the user query';
-    const systemInstruction = `${BASE_SYSTEM_INSTRUCTION}\n\nTARGET USER LANGUAGE: Respond in ${targetLangName}. Maintain accurate Indian place names and local cultural terms.`;
+    const targetLangName = LANGUAGE_NAMES[language] || (language && language !== 'auto' ? language : 'the same language as the user query');
+    const systemInstruction = `${BASE_SYSTEM_INSTRUCTION}
+
+TARGET USER LANGUAGE:
+The user's active selected language is: ${targetLangName}.
+CRITICAL LANGUAGE DIRECTIVE:
+You MUST respond entirely and fluently in ${targetLangName}. If the target language is an Indian language (e.g. Hindi, Marathi, Bengali, Tamil, Telugu, Kannada, Gujarati, Santali, Punjabi, Odia, etc.), write your entire response fluently in its native script. Maintain accurate Indian place names and local cultural terms.`;
 
     let geminiSucceeded = false;
 
     if (apiKey) {
-      try {
-        const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey });
 
-        // Format history for Google Gen AI SDK
-        const contents = [];
-        for (const h of history) {
-          contents.push({
-            role: h.role === 'user' ? 'user' : 'model',
-            parts: [{ text: (h.content || '').slice(0, 1000) }]
-          });
-        }
+      // Format history for Google Gen AI SDK
+      const contents = [];
+      for (const h of history) {
         contents.push({
-          role: 'user',
-          parts: [{ text: rawMessage }]
+          role: h.role === 'user' ? 'user' : 'model',
+          parts: [{ text: (h.content || '').slice(0, 1000) }]
         });
+      }
+      contents.push({
+        role: 'user',
+        parts: [{ text: rawMessage }]
+      });
 
-        if (stream) {
-          // Streaming Server-Sent Events (SSE)
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
-          res.setHeader('Cache-Control', 'no-cache, no-transform');
-          res.setHeader('Connection', 'keep-alive');
-          res.setHeader('X-Accel-Buffering', 'no');
+      for (const currentModel of candidateModels) {
+        if (geminiSucceeded) break;
 
-          const streamResult = await ai.models.generateContentStream({
-            model: model,
-            contents: contents,
-            config: {
-              systemInstruction: systemInstruction,
-              temperature: 0.7,
-              maxOutputTokens: 1000,
+        try {
+          if (stream) {
+            const streamResult = await ai.models.generateContentStream({
+              model: currentModel,
+              contents: contents,
+              config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.7,
+                maxOutputTokens: 1000,
+              }
+            });
+
+            let headersSent = false;
+            for await (const chunk of streamResult) {
+              if (!headersSent) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+                res.setHeader('Cache-Control', 'no-cache, no-transform');
+                res.setHeader('Connection', 'keep-alive');
+                res.setHeader('X-Accel-Buffering', 'no');
+                headersSent = true;
+              }
+              const chunkText = chunk.text || '';
+              if (chunkText) {
+                res.write(`data: ${JSON.stringify({ chunk: chunkText })}\n\n`);
+              }
             }
-          });
 
-          for await (const chunk of streamResult) {
-            const chunkText = chunk.text || '';
-            if (chunkText) {
-              res.write(`data: ${JSON.stringify({ chunk: chunkText })}\n\n`);
+            if (headersSent) {
+              res.write(`data: [DONE]\n\n`);
+              res.end();
+              geminiSucceeded = true;
+              return;
             }
+          } else {
+            const result = await ai.models.generateContent({
+              model: currentModel,
+              contents: contents,
+              config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.7,
+                maxOutputTokens: 1000,
+              }
+            });
+
+            const replyText = result.text || '';
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({
+              success: true,
+              reply: replyText,
+              source: 'gemini',
+              model: currentModel
+            }));
+            geminiSucceeded = true;
+            return;
           }
-
-          res.write(`data: [DONE]\n\n`);
-          res.end();
-          geminiSucceeded = true;
-          return;
-        } else {
-          // Non-streaming JSON response
-          const result = await ai.models.generateContent({
-            model: model,
-            contents: contents,
-            config: {
-              systemInstruction: systemInstruction,
-              temperature: 0.7,
-              maxOutputTokens: 1000,
-            }
-          });
-
-          const replyText = result.text || '';
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({
-            success: true,
-            reply: replyText,
-            source: 'gemini',
-            model: model
-          }));
-          geminiSucceeded = true;
-          return;
+        } catch (err) {
+          console.warn(`[SARTHI Server] Gemini model '${currentModel}' unavailable (${err?.status || err?.code || 'error'}), attempting next candidate:`, err?.message ? err.message.slice(0, 80) : 'Unknown');
+          if (res.headersSent) {
+            // Already started streaming chunks to client, cannot switch model mid-stream
+            try { res.end(); } catch {}
+            return;
+          }
         }
-      } catch (err) {
-        // Secure server-side logging without leaking secrets or stacks
-        console.warn('[SARTHI Server] Google Gemini API call fallback:', {
-          status: err?.status,
-          code: err?.code,
-          message: err?.message ? err.message.slice(0, 80) : 'Unknown'
-        });
       }
     }
 
