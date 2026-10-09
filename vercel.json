@@ -5,6 +5,10 @@
       "destination": "/sw.js"
     },
     {
+      "source": "/api/:path*",
+      "destination": "https://sarthi-e23z.onrender.com/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
