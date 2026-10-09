@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { generateVerifiedFallbackResponse } from '../src/utils/fallbackChat.js';
+import { generateVerifiedFallbackResponse } from './fallbackChat.mjs';
 
 // Rate Limiting In-Memory Store: IP -> [timestamp, ...]
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
